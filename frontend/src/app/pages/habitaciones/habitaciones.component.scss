@@ -1,0 +1,244 @@
+/* Estilos del listado de habitaciones */
+.rooms-page {
+  padding: 40px 0;
+}
+
+/* Estilos del filtro superior */
+.booking-container {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
+}
+.booking-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-end;
+}
+.booking-form .form-group {
+  flex: 1;
+  min-width: 150px;
+}
+.booking-form label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 5px;
+}
+.booking-form .date-input-wrapper {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+.booking-form .custom-date {
+  border: none;
+  padding: 5px 0;
+  width: 100%;
+  background: transparent;
+  outline: none;
+  font-size: 1rem;
+  color: #333;
+}
+.booking-form .search-btn {
+  background: #5d6d5e;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  height: 45px;
+}
+.booking-form .counter-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+.booking-form .counter-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* Estilos del listado de habitaciones */
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+}
+.room-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+.room-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+.room-image img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+.room-info {
+  padding: 25px;
+}
+.room-info h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+.room-desc {
+  color: #666;
+  margin-bottom: 15px;
+}
+.room-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.room-features span {
+  background: #f5f0eb;
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  color: #555;
+}
+.room-features i {
+  color: #8b7355;
+  margin-right: 5px;
+}
+.room-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+.room-price {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #8b7355;
+}
+.room-footer .btn-primary {
+  padding: 8px 20px;
+  font-size: 0.9rem;
+  border-radius: 25px;
+}
+@media (max-width: 768px) {
+  .rooms-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.room-capacity {
+  display: flex;
+  gap: 1rem;
+  margin: 0.5rem 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.room-capacity i {
+  margin-right: 0.25rem;
+}
+.btn-restaurar {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 14px;
+  transition: background 0.3s;
+
+  &:hover {
+    background: #5a6268;
+  }
+}
+
+.resultados-info {
+  background: #f0f7ff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  border-left: 4px solid #1a73e8;
+
+  p {
+    margin: 0;
+    color: #1a237e;
+  }
+
+  .no-disponible {
+    color: #dc3545;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+}
+
+.badge-disponible {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #28a745;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.room-image {
+  position: relative;
+}
+
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+
+  i {
+    font-size: 48px;
+    color: #6c757d;
+  }
+
+  h3 {
+    color: #333;
+    margin: 20px 0 10px;
+  }
+
+  p {
+    color: #666;
+    margin-bottom: 20px;
+  }
+}
+
+.booking-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.booking-form {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-end;
+}

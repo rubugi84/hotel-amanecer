@@ -1,0 +1,154 @@
+<!-- frontend/src/app/admin/admin-layout/admin-layout.component.html -->
+<div class="admin-layout">
+  <!-- Barra superior -->
+  <header class="admin-header">
+    <div class="header-left">
+      <button class="menu-toggle" (click)="toggleMenu()">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="logo">
+        <a routerLink="/admin/dashboard">
+          <span class="icon">🏨</span>
+          <span class="brand">Hotel Admin</span>
+        </a>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="user-dropdown" (click)="toggleDropdown()">
+        <span class="user-icon">
+          <i class="bi bi-person-circle"></i>
+        </span>
+        <span class="user-name">{{
+          admin?.nombre || admin?.usuario || "Admin"
+        }}</span>
+        <i class="bi bi-chevron-down" [class.rotated]="dropdownOpen"></i>
+
+        <div class="dropdown-menu" *ngIf="dropdownOpen">
+          <a routerLink="/admin/perfil">
+            <i class="bi bi-person"></i> Mi perfil
+          </a>
+          <a (click)="logout()">
+            <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="admin-body">
+    <!-- Menú lateral -->
+    <aside class="admin-sidebar" [class.open]="menuOpen">
+      <nav>
+        <ul>
+          <li>
+            <a
+              routerLink="/admin/dashboard"
+              routerLinkActive="active"
+              (click)="menuOpen = false">
+              <i class="bi bi-grid-1x2"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="separator">CONTENIDO</li>
+          <li>
+            <a
+              routerLink="/admin/about"
+              routerLinkActive="active"
+              (click)="menuOpen = false">
+              <i class="bi bi-info-circle"></i>
+              <span>Sobre Nosotros</span>
+            </a>
+          </li>
+          <li>
+            <a
+              routerLink="/admin/habitaciones"
+              routerLinkActive="active"
+              (click)="menuOpen = false">
+              <i class="bi bi-door-open"></i>
+              <span>Habitaciones</span>
+            </a>
+          </li>
+          <li>
+            <a
+              routerLink="/admin/servicios"
+              routerLinkActive="active"
+              (click)="menuOpen = false">
+              <i class="bi bi-grid"></i>
+              <span>Servicios</span>
+            </a>
+          </li>
+          <li>
+            <a
+              routerLink="/admin/redes"
+              routerLinkActive="active"
+              (click)="menuOpen = false">
+              <i class="bi bi-share"></i>
+              <span>Redes Sociales</span>
+            </a>
+          </li>
+          <li>
+            <a
+              routerLink="/admin/legal"
+              routerLinkActive="active"
+              (click)="menuOpen = false">
+              <i class="bi bi-file-text"></i>
+              <span>Páginas Legales</span>
+            </a>
+          </li>
+          <li class="separator">RESERVAS</li>
+          <li>
+            <a
+              routerLink="/admin/reservas"
+              routerLinkActive="active"
+              (click)="menuOpen = false">
+              <i class="bi bi-calendar-check"></i>
+              <span>Gestionar Reservas</span>
+            </a>
+          </li>
+          <li>
+            <a
+              routerLink="/admin/precheckings"
+              routerLinkActive="active"
+              (click)="menuOpen = false">
+              <i class="bi bi-check-circle"></i>
+              <span>Pre-checkings</span>
+            </a>
+          </li>
+          <li class="separator">SISTEMA</li>
+          <li>
+            <a
+              routerLink="/admin/usuarios"
+              routerLinkActive="active"
+              (click)="menuOpen = false">
+              <i class="bi bi-people"></i>
+              <span>Usuarios</span>
+            </a>
+          </li>
+          <li>
+            <a
+              routerLink="/admin/configuracion"
+              routerLinkActive="active"
+              (click)="menuOpen = false">
+              <i class="bi bi-gear"></i>
+              <span>Configuración</span>
+            </a>
+          </li>
+          <li>
+            <a (click)="logout()">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Salir</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- ✅ CONTENIDO PRINCIPAL CON ROUTER-OUTLET -->
+    <main class="admin-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<!-- Overlay para móvil -->
+<div class="sidebar-overlay" *ngIf="menuOpen" (click)="menuOpen = false"></div>

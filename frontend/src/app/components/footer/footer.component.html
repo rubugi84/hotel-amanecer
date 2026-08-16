@@ -1,0 +1,110 @@
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <!-- Columna 1: Marca (YA NO TIENE REDES) -->
+      <div class="footer-section">
+        <h3>{{ footerData["footer_nombre"] || "Hotel Amanecer en Campos" }}</h3>
+        <p>
+          {{
+            footerData["footer_slogan"] ||
+              "Un lugar donde la naturaleza y el confort se encuentran."
+          }}
+        </p>
+      </div>
+
+      <!-- Columna 2: Contacto -->
+      <div class="footer-section">
+        <h4>Contacto</h4>
+        <p>
+          <i class="bi bi-geo-alt"></i>
+          {{ footerData["footer_direccion"] || "Camino del Molino, 12" }}
+        </p>
+        <p>
+          <i class="bi bi-telephone"></i>
+          {{ footerData["footer_telefono"] || "+34 123 456 789" }}
+        </p>
+        <p>
+          <i class="bi bi-envelope"></i>
+          <a
+            href="mailto:{{
+              footerData['footer_email_normal'] || 'info@hotelamanecer.com'
+            }}?subject=Consulta%20desde%20la%20web"
+            target="_blank"
+            class="email-link">
+            {{ footerData["footer_email_normal"] || "info@hotelamanecer.com" }}
+          </a>
+        </p>
+      </div>
+
+      <!-- Columna 3: Información legal -->
+      <div class="footer-section">
+        <h4>Información</h4>
+        <ul>
+          <li>
+            <a href="javascript:void(0)" (click)="openModal('terms')"
+              >Términos y condiciones</a
+            >
+          </li>
+          <li>
+            <a href="javascript:void(0)" (click)="openModal('privacy')"
+              >Política de privacidad</a
+            >
+          </li>
+          <li>
+            <a href="javascript:void(0)" (click)="openModal('cookies')"
+              >Política de cookies</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Columna 4: Recepción & Certificaciones -->
+      <div class="footer-section">
+        <h4>Recepción & Certificaciones</h4>
+        <p>
+          <i class="bi bi-clock"></i> Check-in:
+          {{ footerData["footer_check_in"] || "15:00 – 22:00" }}
+        </p>
+        <p>
+          <i class="bi bi-clock"></i> Check-out:
+          {{ footerData["footer_check_out"] || "12:00" }}
+        </p>
+        <p>
+          <i class="bi bi-shield-check" style="color: #8b7355"></i>
+          {{ footerData["footer_certificacion_1"] || "Calidad Turística" }}
+        </p>
+        <p>
+          <i class="bi bi-star-fill" style="color: #8b7355"></i>
+          {{ footerData["footer_certificacion_2"] || "Recomendado 2025" }}
+        </p>
+      </div>
+    </div>
+
+    <!-- MODAL LEGAL -->
+    <app-legal-modal
+      [key]="modalKey"
+      [isOpen]="modalOpen"
+      (close)="modalOpen = false">
+    </app-legal-modal>
+
+    <!-- FOOTER BOTTOM CON REDES SOCIALES A LA IZQUIERDA -->
+    <div class="footer-bottom">
+      <div class="footer-bottom-content">
+        <div class="social-links">
+          <a
+            *ngFor="let red of redesSociales"
+            [href]="red.url"
+            [attr.aria-label]="red.nombre"
+            target="_blank">
+            <i class="bi {{ red.icono }}"></i>
+          </a>
+        </div>
+        <p class="copyright">
+          &copy; {{ currentYear }}
+          {{ footerData["footer_nombre"] || "Hotel Amanecer en Campos" }}. Todos
+          los derechos reservados.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>

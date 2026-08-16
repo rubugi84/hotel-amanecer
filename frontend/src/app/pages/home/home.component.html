@@ -1,0 +1,166 @@
+<!-- frontend/src/app/pages/home/home.component.html -->
+
+<!-- ============================================ -->
+<!-- HERO - 100% DINÁMICO DESDE LA BD -->
+<!-- ============================================ -->
+<section class="hero">
+  <!-- ✅ Fondo con imagen dinámica - getImagenUrl maneja cualquier tipo -->
+  <div
+    class="hero-background"
+    [style.background-image]="
+      'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(' +
+      getImagenUrl(heroData['hero_imagen']) +
+      ')'
+    "></div>
+
+  <!-- ✅ Textos del hero - usar || para valores por defecto -->
+  <div class="hero-content">
+    <span class="hero-subtitle">{{
+      heroData["hero_subtitle"] || "LUXURY HOTEL EXPERIENCE"
+    }}</span>
+    <h1>{{ heroData["hero_title_1"] || "A UNIQUE EXPERIENCE" }}</h1>
+    <h2>{{ heroData["hero_title_2"] || "WHERE TO STAY" }}</h2>
+  </div>
+
+  <!-- FORMULARIO DE RESERVA -->
+  <div class="booking-container">
+    <form class="booking-form" (ngSubmit)="onSubmit()">
+      <!-- 1. FECHAS -->
+      <div class="form-group date-group">
+        <label>Fecha Entrada / Salida</label>
+        <div class="date-input-wrapper">
+          <input
+            type="text"
+            class="custom-date"
+            placeholder="Selecciona fechas"
+            ngxDaterangepickerMd
+            [(ngModel)]="selectedDateRange"
+            name="dates"
+            [autoApply]="true"
+            [showCustomRangeLabel]="false"
+            [linkedCalendars]="true"
+            [minDate]="today"
+            [locale]="{
+              format: 'DD/MM/YYYY',
+              separator: ' - ',
+              applyLabel: 'Aplicar',
+              cancelLabel: 'Cancelar',
+              customRangeLabel: 'Personalizado',
+              weekLabel: 'Sem',
+              daysOfWeek: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+              monthNames: [
+                'Enero',
+                'Febrero',
+                'Marzo',
+                'Abril',
+                'Mayo',
+                'Junio',
+                'Julio',
+                'Agosto',
+                'Septiembre',
+                'Octubre',
+                'Noviembre',
+                'Diciembre',
+              ],
+              firstDay: 1,
+            }" />
+          <i class="bi bi-calendar4"></i>
+        </div>
+      </div>
+
+      <!-- 2. CONTADOR ADULTOS -->
+      <div class="form-group counter-group">
+        <label>Adultos</label>
+        <div
+          class="counter-wrapper"
+          style="border-bottom: 1px solid #ddd; padding-bottom: 5px">
+          <button
+            type="button"
+            class="counter-btn"
+            (click)="adultos = adultos - 1"
+            [disabled]="adultos <= 1">
+            -
+          </button>
+          <span class="counter-value">{{ adultos }}</span>
+          <button
+            type="button"
+            class="counter-btn"
+            (click)="adultos = adultos + 1">
+            +
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. CONTADOR NIÑOS -->
+      <div class="form-group counter-group">
+        <label>Niños</label>
+        <div
+          class="counter-wrapper"
+          style="border-bottom: 1px solid #ddd; padding-bottom: 5px">
+          <button
+            type="button"
+            class="counter-btn"
+            (click)="ninos = ninos - 1"
+            [disabled]="ninos <= 0">
+            -
+          </button>
+          <span class="counter-value">{{ ninos }}</span>
+          <button type="button" class="counter-btn" (click)="ninos = ninos + 1">
+            +
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="search-btn">RESERVAR</button>
+    </form>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- ABOUT - 100% DINÁMICO DESDE LA BD -->
+<!-- ============================================ -->
+<section class="about container">
+  <div class="about-content" [innerHTML]="aboutContentSanitizado"></div>
+</section>
+
+<!-- ============================================ -->
+<!-- SERVICIOS - 100% DINÁMICO DESDE LA BD -->
+<!-- ============================================ -->
+<section class="servicios">
+  <div class="container">
+    <div class="section-title">
+      <h2>{{ serviciosData["servicios_title"] || "Nuestros Servicios" }}</h2>
+      <p>
+        {{
+          serviciosData["servicios_subtitle"] ||
+            "Todo lo que necesitas para una estancia perfecta"
+        }}
+      </p>
+    </div>
+    <div class="servicios-grid">
+      <div class="servicio-card" *ngFor="let servicio of servicios">
+        <i class="bi {{ servicio.icono || 'bi-star' }}"></i>
+        <h3>{{ servicio.titulo }}</h3>
+        <p>{{ servicio.descripcion }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- CTA - 100% DINÁMICO DESDE LA BD -->
+<!-- ============================================ -->
+<section class="cta">
+  <div class="container">
+    <h2>{{ ctaData["cta_title"] || "¿Listo para tu escapada rural?" }}</h2>
+    <p>
+      {{
+        ctaData["cta_text"] ||
+          "Reserva ahora y disfruta de una experiencia inolvidable"
+      }}
+    </p>
+    <a routerLink="/habitaciones" class="btn-primary">{{
+      ctaData["cta_btn_text"] || "Reservar ahora"
+    }}</a>
+  </div>
+</section>

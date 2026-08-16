@@ -1,0 +1,220 @@
+<!-- frontend/src/app/pages/ver-reserva/ver-reserva.component.html -->
+<div class="ver-reserva-container" *ngIf="!cargando">
+  <div class="reserva-card" *ngIf="reserva">
+    <!-- Header -->
+    <div class="header">
+      <h1>🏨 Detalles de tu reserva</h1>
+      <div class="codigo-reserva">
+        <span class="label">Código:</span>
+        <span class="codigo">{{ reserva.codigo_reserva }}</span>
+      </div>
+      <!-- ✅ Mostrar badge de admin si corresponde -->
+      <div *ngIf="esAdmin" style="margin-top: 10px">
+        <span
+          style="
+            background: #8b7355;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+          ">
+          👑 Panel de Administración
+        </span>
+      </div>
+    </div>
+
+    <!-- ✅ Pre-checking (solo admin) -->
+    <div *ngIf="esAdmin" class="prechecking-section">
+      <div class="prechecking-info">
+        <strong>✅ Pre-checking:</strong>
+        <span *ngIf="reserva.prechecking_realizado" style="color: #28a745">
+          Realizado el
+          {{ reserva.fecha_prechecking | date: "dd/MM/yyyy HH:mm" }}
+        </span>
+        <span *ngIf="!reserva.prechecking_realizado" style="color: #999">
+          ❌ No realizado
+        </span>
+      </div>
+    </div>
+
+    <!-- Habitación -->
+    <div class="habitacion-section">
+      <h3>🛏️ Habitación</h3>
+      <div class="habitacion-info">
+        <p><strong>Nombre:</strong> {{ reserva.habitacion_nombre }}</p>
+        <p *ngIf="reserva.habitacion_descripcion">
+          <strong>Descripción:</strong> {{ reserva.habitacion_descripcion }}
+        </p>
+        <div
+          class="caracteristicas"
+          *ngIf="reserva.habitacion_caracteristicas?.length">
+          <span
+            *ngFor="let carac of reserva.habitacion_caracteristicas"
+            class="caracteristica-tag">
+            {{ carac }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fechas -->
+    <div class="fechas-section">
+      <h3>📅 Fechas</h3>
+      <div class="fechas-grid">
+        <div class="fecha-item">
+          <span class="label">Entrada</span>
+          <span class="value">{{
+            reserva.fecha_entrada | date: "dd/MM/yyyy"
+          }}</span>
+        </div>
+        <div class="fecha-item">
+          <span class="label">Salida</span>
+          <span class="value">{{
+            reserva.fecha_salida | date: "dd/MM/yyyy"
+          }}</span>
+        </div>
+        <div class="fecha-item">
+          <span class="label">Noches</span>
+          <span class="value">{{ calcularNoches() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Huéspedes -->
+    <div class="huespedes-section">
+      <h3>👤 Huéspedes</h3>
+      <div class="huespedes-grid">
+        <div class="huesped-item">
+          <span class="label">Adultos</span>
+          <span class="value">{{ reserva.adultos }}</span>
+        </div>
+        <div class="huesped-item">
+          <span class="label">Niños</span>
+          <span class="value">{{ reserva.ninos || 0 }}</span>
+        </div>
+        <div class="huesped-item">
+          <span class="label">Desayuno</span>
+          <span class="value">{{ reserva.desayuno ? "Sí" : "No" }}</span>
+        </div>
+        <!-- ✅ Hora de llegada (solo si existe) -->
+        <div class="huesped-item" *ngIf="reserva.hora_llegada">
+          <span class="label">Hora llegada</span>
+          <span class="value">{{ reserva.hora_llegada }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cliente -->
+    <div class="cliente-section">
+      <h3>📋 Datos del cliente</h3>
+      <div class="cliente-grid">
+        <div class="cliente-item">
+          <span class="label">Nombre</span>
+          <span class="value"
+            >{{ reserva.nombre_cliente }}
+            {{ reserva.apellidos_cliente || "" }}</span
+          >
+        </div>
+        <div class="cliente-item">
+          <span class="label">Email</span>
+          <span class="value">{{ reserva.email_cliente }}</span>
+        </div>
+        <div class="cliente-item">
+          <span class="label">Teléfono</span>
+          <span class="value">{{ reserva.telefono_cliente }}</span>
+        </div>
+        <div class="cliente-item">
+          <span class="label">DNI</span>
+          <span class="value">{{
+            reserva.dni_cliente || "No registrado"
+          }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Solicitudes especiales -->
+    <div class="solicitudes-section" *ngIf="reserva.solicitud_especial">
+      <h3>📝 Solicitudes especiales</h3>
+      <p>{{ reserva.solicitud_especial }}</p>
+    </div>
+
+    <!-- ✅ Documentos (solo admin) -->
+    <div
+      class="documentos-section"
+      *ngIf="esAdmin && (reserva.dni_frontal_url || reserva.dni_trasero_url)">
+      <h3>🪪 Documentos</h3>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap">
+        <a
+          *ngIf="reserva.dni_frontal_url"
+          [href]="'http://localhost:3000' + reserva.dni_frontal_url"
+          target="_blank"
+          class="btn-edit"
+          style="
+            padding: 8px 16px;
+            background: #e9ecef;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+          ">
+          🪪 Ver DNI (frontal)
+        </a>
+        <a
+          *ngIf="reserva.dni_trasero_url"
+          [href]="'http://localhost:3000' + reserva.dni_trasero_url"
+          target="_blank"
+          class="btn-edit"
+          style="
+            padding: 8px 16px;
+            background: #e9ecef;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+          ">
+          🪪 Ver DNI (trasero)
+        </a>
+      </div>
+    </div>
+
+    <!-- Precio -->
+    <div class="precio-section">
+      <h3>💰 Precio total</h3>
+      <div class="precio-total">
+        <span class="total">{{ reserva.importe_total | currency: "EUR" }}</span>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="acciones">
+      <button class="btn-secondary" (click)="volver()">
+        <i class="bi bi-arrow-left"></i>
+        {{ esAdmin ? "Volver al Panel" : "Volver" }}
+      </button>
+      <button class="btn-primary" (click)="imprimir()" *ngIf="reserva">
+        <i class="bi bi-printer"></i> Imprimir
+      </button>
+      <!-- ✅ Botón para volver al admin (si es admin) -->
+      <button
+        *ngIf="esAdmin"
+        class="btn-primary"
+        (click)="volver()"
+        style="background: #6c757d">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-card" *ngIf="error">
+    <h3>❌ Reserva no encontrada</h3>
+    <p>No se ha encontrado ninguna reserva con el código proporcionado.</p>
+    <button class="btn-secondary" (click)="volver()">
+      {{ esAdmin ? "Volver al Panel" : "Volver al inicio" }}
+    </button>
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="loading-container" *ngIf="cargando">
+  <div class="spinner"></div>
+  <p>Cargando detalles de la reserva...</p>
+</div>

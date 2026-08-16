@@ -1,0 +1,15 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "@angular-eslint/eslint-plugin": "^22.1.0",
+    "@angular-eslint/template-parser": "^22.1.0",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^9.39.5",
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^8.67.0"
+  },
+  "scripts": {
+    "lint": "eslint \"frontend/src/**/*.ts\"",
+    "lint:fix": "eslint \"frontend/src/**/*.ts\" --fix"
+  }
+}

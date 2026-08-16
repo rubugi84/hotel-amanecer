@@ -1,0 +1,290 @@
+/* Estilos globales */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap");
+
+:root {
+  --primary-color: #8b7355;
+  --secondary-color: #d4c5a9;
+  --accent-color: #e8d5b7;
+  --text-color: #333333;
+  --light-bg: #f5f0eb;
+  --white: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Lato", sans-serif;
+  color: var(--text-color);
+  background-color: var(--light-bg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Playfair Display", serif;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Secciones generales */
+.section-title {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-title h2 {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.section-title p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .section-title h2 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* =========================================
+   ESTILOS DEL POPUP DE PERSONAS (Adults / Childs)
+   ========================================= */
+.personas-select-wrapper {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+}
+
+.personas-popup {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+  z-index: 1000;
+  min-width: 200px;
+  margin-top: 5px;
+}
+
+.personas-popup .counter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.personas-popup .counter label {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.personas-popup .counter button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.personas-popup .counter button:hover {
+  background: #8b7355;
+  color: white;
+  border-color: #8b7355;
+}
+
+.personas-popup .counter span {
+  font-size: 1rem;
+  font-weight: 500;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* =========================================
+   ESTILOS DEL INPUT DE FECHA (ngx-daterangepicker-material)
+   ========================================= */
+.date-input-wrapper {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+  width: 100%;
+}
+
+.date-input-wrapper input.custom-date {
+  border: none;
+  padding: 5px 0;
+  width: 100%;
+  font-size: 1rem;
+  color: #333;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  font-family: "Lato", sans-serif;
+}
+
+/* =========================================
+   ESTILOS DE LOS CONTADORES (+ y -)
+   ========================================= */
+.counter-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.counter-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: white;
+  color: #333;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.counter-btn:hover {
+  background: #8b7355;
+  color: white;
+  border-color: #8b7355;
+}
+
+.counter-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.counter-value {
+  font-size: 1rem;
+  font-weight: 500;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* =========================================
+   CALENDARIO ngx-daterangepicker CORREGIDO
+   HORIZONTAL, FLOTANTE, 2 MESES LADO A LADO
+   ========================================= */
+.md-drppicker.opensleft,
+.md-drppicker.opensright,
+.md-drppicker.openscenter {
+  position: fixed !important;
+  top: 40% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 99999 !important;
+  background: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25) !important;
+  border: none !important;
+  padding: 20px 25px !important;
+
+  /* Ancho ajustado para que quepan 2 meses */
+  min-width: 700px !important;
+  width: auto !important;
+  max-width: 90vw !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+}
+
+/* Cada mes ocupa la mitad del ancho (48% + 48% = 96%) */
+.md-drppicker .calendar-table {
+  display: inline-block !important;
+  width: 48% !important;
+  margin: 0 1% !important;
+  vertical-align: top !important;
+  min-width: 280px !important;
+}
+
+/* Ocultar botones Apply/Cancel (porque usamos [autoApply]="true") */
+.md-drppicker .btn,
+.md-drppicker .buttons,
+.md-drppicker .md-drppicker-footer {
+  display: none !important;
+}
+
+/* Colores del rango seleccionado */
+.md-drppicker td.active,
+.md-drppicker td.active:hover {
+  background-color: var(--primary-color) !important;
+}
+
+.md-drppicker td.in-range {
+  background-color: var(--accent-color) !important;
+}
+
+/* Móvil: 1 mes en vertical */
+@media (max-width: 768px) {
+  .md-drppicker.opensleft,
+  .md-drppicker.opensright,
+  .md-drppicker.openscenter {
+    min-width: auto !important;
+    width: 95vw !important;
+    top: 20% !important;
+    padding: 15px !important;
+  }
+
+  .md-drppicker .calendar-table {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 0 15px 0 !important;
+    min-width: auto !important;
+  }
+
+}
+
+.servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+.servicio-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.servicio-card i {
+    font-size: 3rem;
+    color: #8b7355;
+    margin-bottom: 15px;
+}
+.servicios {
+    padding: 80px 0 100px 0; /* Mucho espacio abajo */
+    background: #fff;
+}

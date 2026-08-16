@@ -1,0 +1,68 @@
+<section class="reservas-page">
+    <div class="container">
+        <div class="section-title">
+            <h2>Reservar Habitación</h2>
+            <p>Completa el formulario y reserva tu estancia</p>
+        </div>
+
+        <div class="reservation-form-container">
+            <form (ngSubmit)="onSubmit()" class="reservation-form">
+                <div class="form-group">
+                    <label for="name">Nombre completo *</label>
+                    <input type="text" id="name" [(ngModel)]="reservation.name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" [(ngModel)]="reservation.email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Teléfono *</label>
+                    <input type="tel" id="phone" [(ngModel)]="reservation.phone" name="phone" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="checkIn">Fecha entrada *</label>
+                        <input type="date" id="checkIn" [(ngModel)]="reservation.checkIn" name="checkIn" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="checkOut">Fecha salida *</label>
+                        <input type="date" id="checkOut" [(ngModel)]="reservation.checkOut" name="checkOut" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="adults">Adultos *</label>
+                        <input type="number" id="adults" [(ngModel)]="reservation.adults" name="adults" min="1" max="10" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="children">Niños</label>
+                        <input type="number" id="children" [(ngModel)]="reservation.children" name="children" min="0" max="10">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="roomType">Tipo de habitación *</label>
+                    <select id="roomType" [(ngModel)]="reservation.roomType" name="roomType" required>
+                        <option value="estandar">Habitación Estándar</option>
+                        <option value="superior">Habitación Superior</option>
+                        <option value="familiar">Suite Familiar</option>
+                        <option value="deluxe">Habitación Deluxe</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Mensaje o peticiones especiales</label>
+                    <textarea id="message" [(ngModel)]="reservation.message" name="message" rows="4"></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary">Reservar ahora</button>
+            </form>
+        </div>
+    </div>
+</section>

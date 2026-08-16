@@ -1,0 +1,116 @@
+<!-- frontend/src/app/pages/resumen-reserva/resumen-reserva.component.html -->
+<div class="resumen-container" *ngIf="datos">
+  <div class="resumen-card">
+    <h2>📋 Resumen de tu reserva</h2>
+    <p class="subtitle">Revisa los datos antes de confirmar</p>
+
+    <!-- ✅ MENSAJE DE ERROR -->
+    <div *ngIf="mostrarError" class="mensaje-error">
+      <i class="bi bi-exclamation-circle"></i>
+      {{ mensajeError }}
+    </div>
+
+    <!-- ✅ MENSAJE DE ÉXITO -->
+    <div *ngIf="mostrarExito" class="mensaje-exito">
+      <i class="bi bi-check-circle"></i>
+      {{ mensajeExito }}
+      <span class="redirigiendo">Redirigiendo al inicio...</span>
+    </div>
+
+    <!-- Datos de la habitación -->
+    <div class="habitacion-info">
+      <h3>🏠 {{ datos.habitacion.nombre }}</h3>
+      <p>{{ datos.habitacion.descripcion }}</p>
+      <div class="detalles">
+        <span
+          ><strong>Capacidad:</strong>
+          {{ datos.habitacion.capacidad }} personas</span
+        >
+        <span
+          ><strong>Precio/noche:</strong>
+          {{ datos.habitacion.precio | currency: "EUR" }}</span
+        >
+      </div>
+    </div>
+
+    <!-- Fechas -->
+    <div class="info-section">
+      <h4>📅 Fechas</h4>
+      <div class="info-grid">
+        <span><strong>Entrada:</strong> {{ datos.fechas.entrada }}</span>
+        <span><strong>Salida:</strong> {{ datos.fechas.salida }}</span>
+        <span><strong>Noches:</strong> {{ totalNoches }}</span>
+      </div>
+    </div>
+
+    <!-- Huéspedes -->
+    <div class="info-section">
+      <h4>👤 Huéspedes</h4>
+      <div class="info-grid">
+        <span><strong>Adultos:</strong> {{ datos.huespedes.adultos }}</span>
+        <span><strong>Niños:</strong> {{ datos.huespedes.ninos }}</span>
+        <span
+          ><strong>Desayuno:</strong>
+          {{ datos.desayuno ? "✅ Incluido" : "❌ No incluido" }}</span
+        >
+      </div>
+    </div>
+
+    <!-- Cliente -->
+    <div class="info-section">
+      <h4>👤 Datos del cliente</h4>
+      <div class="info-grid">
+        <span
+          ><strong>Nombre:</strong> {{ datos.cliente.nombre }}
+          {{ datos.cliente.apellidos }}</span
+        >
+        <span><strong>Email:</strong> {{ datos.cliente.email }}</span>
+        <span><strong>Teléfono:</strong> {{ datos.cliente.telefono }}</span>
+        <span><strong>DNI:</strong> {{ datos.cliente.dni }}</span>
+        <span *ngIf="datos.cliente.direccion"
+          ><strong>Dirección:</strong> {{ datos.cliente.direccion }}</span
+        >
+      </div>
+    </div>
+
+    <!-- Solicitud especial -->
+    <div class="info-section" *ngIf="solicitudEspecial">
+      <h4>📝 Solicitud especial</h4>
+      <p>{{ solicitudEspecial }}</p>
+    </div>
+
+    <!-- Hora estimada de llegada -->
+    <div class="info-section" *ngIf="horaEstimadaLlegada">
+      <h4>🕐 Hora estimada de llegada</h4>
+      <p>{{ horaEstimadaLlegada }}</p>
+    </div>
+
+    <!-- Total -->
+    <div class="total-section">
+      <span class="total-label">Total:</span>
+      <span class="total-price">{{ datos.importe | currency: "EUR" }}</span>
+    </div>
+
+    <!-- Botones -->
+    <div class="button-group">
+      <button
+        class="btn-secondary"
+        (click)="volverAlDetalle()"
+        [disabled]="procesando">
+        ← Volver
+      </button>
+      <button
+        class="btn-primary"
+        (click)="confirmarReserva()"
+        [disabled]="procesando || mostrarExito">
+        {{ procesando ? "⏳ Procesando..." : "✅ Confirmar Reserva" }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Estado de carga -->
+<div *ngIf="!datos" class="loading-container">
+  <div class="spinner"></div>
+  <p>Cargando datos de la reserva...</p>
+</div>

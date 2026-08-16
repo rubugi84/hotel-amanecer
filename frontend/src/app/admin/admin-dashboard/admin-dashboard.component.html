@@ -1,0 +1,2907 @@
+<!-- frontend/src/app/admin/admin-dashboard/admin-dashboard.component.html -->
+<div class="admin-dashboard">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" [class.open]="menuAbierto">
+    <div class="sidebar-header">
+      <div class="logo">
+        <i class="bi bi-house-heart"></i>
+        <span>Hotel Admin</span>
+      </div>
+      <button class="close-sidebar" (click)="menuAbierto = false">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button
+        class="nav-item"
+        [class.active]="seccionActual === 'dashboard'"
+        (click)="cambiarSeccion('dashboard')">
+        <i class="bi bi-grid-1x2"></i>
+        <span>Dashboard</span>
+      </button>
+
+      <div class="nav-divider">CONTENIDO</div>
+
+      <button
+        class="nav-item"
+        [class.active]="seccionActual === 'about'"
+        (click)="cambiarSeccion('about')">
+        <i class="bi bi-info-circle"></i>
+        <span>Sobre Nosotros</span>
+      </button>
+
+      <button
+        class="nav-item"
+        [class.active]="seccionActual === 'habitaciones'"
+        (click)="cambiarSeccion('habitaciones')">
+        <i class="bi bi-door-open"></i>
+        <span>Habitaciones</span>
+      </button>
+
+      <button
+        class="nav-item"
+        [class.active]="seccionActual === 'servicios'"
+        (click)="cambiarSeccion('servicios')">
+        <i class="bi bi-grid"></i>
+        <span>Servicios</span>
+      </button>
+
+      <button
+        class="nav-item"
+        [class.active]="seccionActual === 'redes'"
+        (click)="cambiarSeccion('redes')">
+        <i class="bi bi-share"></i>
+        <span>Redes Sociales</span>
+      </button>
+
+      <button
+        class="nav-item"
+        [class.active]="seccionActual === 'legal'"
+        (click)="cambiarSeccion('legal')">
+        <i class="bi bi-file-text"></i>
+        <span>Páginas Legales</span>
+      </button>
+
+      <div class="nav-divider">RESERVAS</div>
+
+      <button
+        class="nav-item"
+        [class.active]="seccionActual === 'reservas'"
+        (click)="cambiarSeccion('reservas')">
+        <i class="bi bi-calendar-check"></i>
+        <span>Reservas</span>
+      </button>
+
+      <div class="nav-divider">SISTEMA</div>
+
+      <button
+        class="nav-item"
+        [class.active]="seccionActual === 'usuarios'"
+        (click)="cambiarSeccion('usuarios')">
+        <i class="bi bi-people"></i>
+        <span>Usuarios</span>
+      </button>
+
+      <button
+        class="nav-item"
+        [class.active]="seccionActual === 'configuracion'"
+        (click)="cambiarSeccion('configuracion')">
+        <i class="bi bi-gear"></i>
+        <span>Configuración</span>
+      </button>
+
+      <div class="nav-divider"></div>
+
+      <button class="nav-item logout" (click)="cerrarSesion()">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Cerrar sesión</span>
+      </button>
+    </nav>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="main-content">
+    <header class="content-header">
+      <button class="menu-toggle" (click)="menuAbierto = !menuAbierto">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="header-title">
+        <h1>{{ titulosSeccion[seccionActual] }}</h1>
+      </div>
+      <div class="header-user">
+        <span class="user-name">{{ getNombreCompleto() }}</span>
+        <div class="user-avatar">{{ getIniciales() }}</div>
+      </div>
+    </header>
+
+    <div class="content-body">
+      <!-- DASHBOARD -->
+      <div *ngIf="seccionActual === 'dashboard'" class="seccion">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #e3f2fd; color: #1976d2">
+              <i class="bi bi-calendar-check"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number">{{ estadisticas.reservasHoy }}</span>
+              <span class="stat-label">Reservas hoy</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #e8f5e9; color: #388e3c">
+              <i class="bi bi-calendar-week"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number">{{ estadisticas.reservasSemana }}</span>
+              <span class="stat-label">Reservas esta semana</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #fff3e0; color: #f57c00">
+              <i class="bi bi-clock-history"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number">{{
+                estadisticas.precheckingsPendientes
+              }}</span>
+              <span class="stat-label">Pre-checkings pendientes</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #fce4ec; color: #c62828">
+              <i class="bi bi-door-open"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number">{{
+                estadisticas.habitacionesDisponibles
+              }}</span>
+              <span class="stat-label">Habitaciones disponibles</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <h2>⚡ Acciones rápidas</h2>
+          <div class="actions-grid">
+            <button class="action-card" (click)="cambiarSeccion('reservas')">
+              <i class="bi bi-calendar-plus"></i>
+              <span>Ver reservas</span>
+            </button>
+            <button
+              class="action-card"
+              (click)="cambiarSeccion('precheckings')">
+              <i class="bi bi-check-circle"></i>
+              <span>Pre-checkings</span>
+            </button>
+            <button
+              class="action-card"
+              (click)="cambiarSeccion('habitaciones')">
+              <i class="bi bi-grid-3x3-gap"></i>
+              <span>Gestionar habitaciones</span>
+            </button>
+            <button class="action-card" (click)="cambiarSeccion('about')">
+              <i class="bi bi-pencil-square"></i>
+              <span>Editar contenido</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div *ngIf="seccionActual === 'about'" class="seccion">
+        <div class="editor-container">
+          <div class="editor-header">
+            <h2>📝 Editar "Sobre Nosotros"</h2>
+            <p class="editor-subtitle">
+              Utiliza el editor para modificar el contenido de la página "Sobre
+              Nosotros". Puedes añadir texto, imágenes, listas y dar formato al
+              contenido.
+            </p>
+          </div>
+
+          <editor
+            [init]="editorConfig"
+            [(ngModel)]="contenidoAbout"
+            [apiKey]="tinymceApiKey">
+          </editor>
+
+          <div class="editor-info">
+            <div class="info-box">
+              <i class="bi bi-info-circle"></i>
+              <div>
+                <strong>Consejos:</strong>
+                <ul>
+                  <li>Usa <strong>H2</strong> para los títulos principales</li>
+                  <li>Las imágenes se suben automáticamente al servidor</li>
+                  <li>Puedes añadir enlaces a otras páginas</li>
+                  <li>Guarda los cambios antes de salir</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="editor-actions">
+            <button
+              class="btn-guardar"
+              (click)="guardarAbout()"
+              [disabled]="guardando">
+              <i
+                class="bi"
+                [class.bi-check-circle]="!guardando"
+                [class.bi-hourglass-split]="guardando"></i>
+              {{ guardando ? "Guardando..." : "💾 Guardar cambios" }}
+            </button>
+            <button class="btn-preview" (click)="abrirVistaPrevia()">
+              <i class="bi bi-eye"></i> 👁️ Vista previa
+            </button>
+            <button class="btn-restaurar" (click)="restaurarAbout()">
+              <i class="bi bi-arrow-counterclockwise"></i> 🔄 Restaurar
+            </button>
+          </div>
+
+          <div
+            *ngIf="mensajeGuardado"
+            class="mensaje-guardado"
+            [class.success]="mensajeExito">
+            <i
+              [class]="
+                mensajeExito ? 'bi bi-check-circle' : 'bi bi-exclamation-circle'
+              "></i>
+            {{ mensajeGuardado }}
+          </div>
+        </div>
+      </div>
+
+      <!-- HABITACIONES -->
+      <div *ngIf="seccionActual === 'habitaciones'" class="seccion">
+        <div class="list-header">
+          <h2>🏠 Gestión de Habitaciones</h2>
+          <button class="btn-primary" (click)="abrirModalNuevaHabitacion()">
+            + Añadir habitación
+          </button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Capacidad</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let h of habitaciones">
+                <td>{{ h.id }}</td>
+                <td>{{ h.nombre }}</td>
+                <td>{{ h.precio }}€</td>
+                <td>
+                  {{ (h.capacidad_adultos || 0) + (h.capacidad_ninos || 0) }}
+                  personas
+                </td>
+                <td>
+                  <span class="badge" [class.active]="h.activo">
+                    {{ h.activo ? "Activo" : "Inactivo" }}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    class="btn-edit"
+                    (click)="abrirModalEditarHabitacion(h)"
+                    title="Editar">
+                    ✏️
+                  </button>
+                  <button
+                    class="btn-toggle"
+                    (click)="toggleActivo(h)"
+                    [class.active]="h.activo"
+                    title="Activar/Desactivar">
+                    {{ h.activo ? "🔴" : "🟢" }}
+                  </button>
+                  <button
+                    class="btn-delete"
+                    (click)="eliminarHabitacion(h.id)"
+                    title="Eliminar">
+                    🗑️
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SERVICIOS -->
+      <div *ngIf="seccionActual === 'servicios'" class="seccion">
+        <div class="list-header">
+          <h2>🎯 Gestión de Servicios</h2>
+          <button class="btn-primary" (click)="abrirModalNuevoServicio()">
+            + Añadir servicio
+          </button>
+        </div>
+
+        <div class="servicios-admin-grid">
+          <div class="servicio-admin-card" *ngFor="let s of servicios">
+            <div class="servicio-admin-card-header">
+              <div class="servicio-icon-wrapper">
+                <i class="bi {{ s.icono || 'bi-star' }}"></i>
+              </div>
+              <div class="servicio-badge" [class.activo]="s.activo">
+                {{ s.activo ? "Activo" : "Inactivo" }}
+              </div>
+            </div>
+            <div class="servicio-admin-card-body">
+              <h3>{{ s.titulo }}</h3>
+              <p>{{ s.descripcion }}</p>
+              <small class="orden-text">Orden: {{ s.orden || 0 }}</small>
+            </div>
+            <div class="servicio-admin-card-footer">
+              <button
+                class="btn-edit"
+                (click)="abrirModalEditarServicio(s)"
+                title="Editar">
+                ✏️
+              </button>
+              <button
+                class="btn-toggle"
+                (click)="toggleActivoServicio(s)"
+                [class.active]="s.activo"
+                title="Activar/Desactivar">
+                {{ s.activo ? "🔴" : "🟢" }}
+              </button>
+              <button
+                class="btn-delete"
+                (click)="eliminarServicio(s.id)"
+                title="Eliminar">
+                🗑️
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REDES SOCIALES -->
+      <div *ngIf="seccionActual === 'redes'" class="seccion">
+        <div class="list-header">
+          <h2>🌐 Gestión de Redes Sociales</h2>
+          <button class="btn-primary" (click)="abrirModalNuevaRedSocial()">
+            + Añadir red social
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Icono</th>
+                <th>Nombre</th>
+                <th>URL</th>
+                <th>Orden</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let r of redesSociales">
+                <td>{{ r.id }}</td>
+                <td>
+                  <i class="bi {{ r.icono }}" style="font-size: 20px"></i>
+                </td>
+                <td>{{ r.nombre }}</td>
+                <td>
+                  <a
+                    href="{{ r.url }}"
+                    target="_blank"
+                    style="color: #8b7355; text-decoration: none">
+                    {{
+                      r.url.length > 30
+                        ? (r.url | slice: 0 : 30) + "..."
+                        : r.url
+                    }}
+                  </a>
+                </td>
+                <td>{{ r.orden || 0 }}</td>
+                <td>
+                  <span class="badge" [class.active]="r.activo">
+                    {{ r.activo ? "Activo" : "Inactivo" }}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    class="btn-edit"
+                    (click)="abrirModalEditarRedSocial(r)"
+                    title="Editar">
+                    ✏️
+                  </button>
+                  <button
+                    class="btn-toggle"
+                    (click)="toggleActivoRedSocial(r)"
+                    [class.active]="r.activo"
+                    title="Activar/Desactivar">
+                    {{ r.activo ? "🔴" : "🟢" }}
+                  </button>
+                  <button
+                    class="btn-delete"
+                    (click)="eliminarRedSocial(r.id)"
+                    title="Eliminar">
+                    🗑️
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PÁGINAS LEGALES -->
+      <div *ngIf="seccionActual === 'legal'" class="seccion">
+        <div class="editor-container">
+          <div class="editor-header">
+            <h2>📄 Gestión de Páginas Legales</h2>
+            <p class="editor-subtitle">
+              Utiliza los editores para modificar el contenido de las páginas
+              legales. Cada página tiene su propio editor.
+            </p>
+          </div>
+
+          <!-- AVISO LEGAL -->
+          <div class="legal-editor-section">
+            <div class="legal-editor-header">
+              <h3>
+                <span class="legal-badge">1</span>
+                Aviso Legal
+              </h3>
+              <button
+                class="btn-guardar-small"
+                (click)="guardarPaginaLegal('aviso-legal')"
+                [disabled]="guardando">
+                {{ guardando ? "⏳" : "💾 Guardar" }}
+              </button>
+            </div>
+            <editor
+              [init]="editorConfigLegal"
+              [(ngModel)]="paginasLegales.aviso_legal.contenido"
+              [apiKey]="tinymceApiKey">
+            </editor>
+            <div class="editor-info-small">
+              <i class="bi bi-info-circle"></i>
+              <span>
+                Clave: <strong>aviso-legal</strong> | Última actualización:
+                <strong>{{
+                  paginasLegales.aviso_legal.fecha_actualizacion | dateOrNever
+                }}</strong>
+              </span>
+            </div>
+          </div>
+
+          <hr class="legal-divider" />
+
+          <!-- POLÍTICA DE PRIVACIDAD -->
+          <div class="legal-editor-section">
+            <div class="legal-editor-header">
+              <h3>
+                <span class="legal-badge">2</span>
+                Política de Privacidad
+              </h3>
+              <button
+                class="btn-guardar-small"
+                (click)="guardarPaginaLegal('politica-privacidad')"
+                [disabled]="guardando">
+                {{ guardando ? "⏳" : "💾 Guardar" }}
+              </button>
+            </div>
+            <editor
+              [init]="editorConfigLegal"
+              [(ngModel)]="paginasLegales.politica_privacidad.contenido"
+              [apiKey]="tinymceApiKey">
+            </editor>
+            <div class="editor-info-small">
+              <i class="bi bi-info-circle"></i>
+              <span>
+                Clave: <strong>aviso-legal</strong> | Última actualización:
+                <strong>{{
+                  paginasLegales.aviso_legal.fecha_actualizacion | dateOrNever
+                }}</strong>
+              </span>
+            </div>
+          </div>
+
+          <hr class="legal-divider" />
+
+          <!-- POLÍTICA DE COOKIES -->
+          <div class="legal-editor-section">
+            <div class="legal-editor-header">
+              <h3>
+                <span class="legal-badge">3</span>
+                Política de Cookies
+              </h3>
+              <button
+                class="btn-guardar-small"
+                (click)="guardarPaginaLegal('politica-cookies')"
+                [disabled]="guardando">
+                {{ guardando ? "⏳" : "💾 Guardar" }}
+              </button>
+            </div>
+            <editor
+              [init]="editorConfigLegal"
+              [(ngModel)]="paginasLegales.politica_cookies.contenido"
+              [apiKey]="tinymceApiKey">
+            </editor>
+            <div class="editor-info-small">
+              <i class="bi bi-info-circle"></i>
+              <span>
+                Clave: <strong>aviso-legal</strong> | Última actualización:
+                <strong>{{
+                  paginasLegales.aviso_legal.fecha_actualizacion | dateOrNever
+                }}</strong>
+              </span>
+            </div>
+          </div>
+
+          <!-- ACCIONES GLOBALES -->
+          <div
+            class="editor-actions"
+            style="
+              margin-top: 30px;
+              padding-top: 20px;
+              border-top: 2px solid #e9ecef;
+            ">
+            <button
+              class="btn-guardar"
+              (click)="guardarTodasPaginasLegales()"
+              [disabled]="guardando">
+              <i
+                class="bi"
+                [class.bi-check-circle]="!guardando"
+                [class.bi-hourglass-split]="guardando"></i>
+              {{ guardando ? "Guardando..." : "💾 Guardar todas" }}
+            </button>
+            <button class="btn-restaurar" (click)="restaurarPaginasLegales()">
+              <i class="bi bi-arrow-counterclockwise"></i> 🔄 Restaurar todas
+            </button>
+          </div>
+
+          <div
+            *ngIf="mensajeGuardado"
+            class="mensaje-guardado"
+            [class.success]="mensajeExito">
+            <i
+              [class]="
+                mensajeExito ? 'bi bi-check-circle' : 'bi bi-exclamation-circle'
+              "></i>
+            {{ mensajeGuardado }}
+          </div>
+        </div>
+      </div>
+      <!-- ============================================ -->
+      <!-- RESERVAS - VERSIÓN CON NOTIFICACIONES -->
+      <!-- ============================================ -->
+      <div *ngIf="seccionActual === 'reservas'" class="seccion">
+        <div class="list-header">
+          <h2>📋 Gestión de Reservas</h2>
+          <div style="display: flex; gap: 10px; align-items: center">
+            <button
+              class="btn-primary"
+              (click)="cargarReservas()"
+              [disabled]="cargandoReservas"
+              style="background: #8b7355; border-color: #8b7355">
+              {{ cargandoReservas ? "⏳ Cargando..." : "🔄 Cargar Reservas" }}
+            </button>
+            <span
+              *ngIf="reservas.length > 0"
+              style="color: #28a745; font-weight: 600">
+              ✅ {{ reservas.length }} reservas
+            </span>
+          </div>
+        </div>
+
+        <!-- FILTROS -->
+        <div
+          style="
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+          ">
+          <div
+            style="
+              display: flex;
+              gap: 15px;
+              flex-wrap: wrap;
+              align-items: flex-end;
+            ">
+            <!-- Datepicker -->
+            <div style="min-width: 250px">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #666;
+                  margin-bottom: 4px;
+                "
+                >📅 Rango de fechas</label
+              >
+              <div style="position: relative">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Selecciona fechas"
+                  ngxDaterangepickerMd
+                  [(ngModel)]="selectedDateRange"
+                  name="fechasReservas"
+                  [autoApply]="true"
+                  [showCustomRangeLabel]="false"
+                  [linkedCalendars]="true"
+                  [minDate]="today"
+                  [locale]="{
+                    format: 'DD/MM/YYYY',
+                    separator: ' - ',
+                    applyLabel: 'Aplicar',
+                    cancelLabel: 'Cancelar',
+                    customRangeLabel: 'Personalizado',
+                    weekLabel: 'Sem',
+                    daysOfWeek: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                    monthNames: [
+                      'Enero',
+                      'Febrero',
+                      'Marzo',
+                      'Abril',
+                      'Mayo',
+                      'Junio',
+                      'Julio',
+                      'Agosto',
+                      'Septiembre',
+                      'Octubre',
+                      'Noviembre',
+                      'Diciembre',
+                    ],
+                    firstDay: 1,
+                  }"
+                  style="
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    padding-right: 35px;
+                  " />
+                <i
+                  class="bi bi-calendar4"
+                  style="
+                    position: absolute;
+                    right: 10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: #999;
+                    pointer-events: none;
+                  "></i>
+              </div>
+            </div>
+
+            <!-- Búsqueda -->
+            <div style="flex: 1; min-width: 200px">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #666;
+                  margin-bottom: 4px;
+                "
+                >🔍 Buscar</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="filtroBusqueda"
+                (input)="aplicarFiltros()"
+                placeholder="Nombre, DNI, Código..."
+                style="
+                  width: 100%;
+                  padding: 8px 12px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                " />
+            </div>
+
+            <!-- Filtro estado -->
+            <div style="min-width: 150px">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #666;
+                  margin-bottom: 4px;
+                "
+                >📌 Estado</label
+              >
+              <select
+                class="form-control"
+                [(ngModel)]="filtroEstado"
+                (change)="aplicarFiltros()"
+                style="
+                  width: 100%;
+                  padding: 8px 12px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                ">
+                <option value="todos">Todos</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="confirmada">Confirmada</option>
+                <option value="cancelada">Cancelada</option>
+                <option value="completada">Completada</option>
+              </select>
+            </div>
+
+            <!-- Filtro prechecking -->
+            <div style="min-width: 150px">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #666;
+                  margin-bottom: 4px;
+                "
+                >✅ Pre-checking</label
+              >
+              <select
+                class="form-control"
+                [(ngModel)]="filtroPrechecking"
+                (change)="aplicarFiltros()"
+                style="
+                  width: 100%;
+                  padding: 8px 12px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                ">
+                <option value="todas">Todas</option>
+                <option value="si">✅ Realizado</option>
+                <option value="no">❌ Pendiente</option>
+              </select>
+            </div>
+
+            <!-- Botón filtrar -->
+            <div style="min-width: 120px">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #666;
+                  margin-bottom: 4px;
+                "
+                >&nbsp;</label
+              >
+              <button
+                class="btn-primary"
+                (click)="aplicarFiltros()"
+                style="
+                  background: #8b7355;
+                  border-color: #8b7355;
+                  color: white;
+                  padding: 8px 16px;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                  width: 100%;
+                ">
+                🔍 Filtrar
+              </button>
+            </div>
+
+            <!-- Contador -->
+            <div style="min-width: 100px">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #666;
+                  margin-bottom: 4px;
+                "
+                >📊 Total</label
+              >
+              <div
+                style="
+                  background: #8b7355;
+                  color: white;
+                  padding: 8px 16px;
+                  border-radius: 4px;
+                  text-align: center;
+                  font-weight: 600;
+                ">
+                {{ reservasFiltradas.length }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ✅ ZONA DE NOTIFICACIONES - ENTRE FILTROS Y TABLA -->
+        <div
+          *ngIf="mensajeNotificacion"
+          style="
+            margin-bottom: 15px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.3s ease-out;
+            border: 1px solid;
+          "
+          [style.background]="notificacionExito ? '#d4edda' : '#f8d7da'"
+          [style.border-color]="notificacionExito ? '#28a745' : '#dc3545'"
+          [style.color]="notificacionExito ? '#155724' : '#721c24'">
+          <span style="font-size: 24px">
+            {{ notificacionExito ? "✅" : "❌" }}
+          </span>
+
+          <div style="flex: 1">
+            <strong>{{ notificacionExito ? "Éxito" : "Error" }}</strong>
+            <span style="margin-left: 8px">{{ mensajeNotificacion }}</span>
+          </div>
+
+          <button
+            (click)="cerrarNotificacion()"
+            style="
+              background: none;
+              border: none;
+              font-size: 20px;
+              cursor: pointer;
+              color: inherit;
+              opacity: 0.7;
+              padding: 0 5px;
+            "
+            title="Cerrar notificación">
+            ✕
+          </button>
+        </div>
+
+        <!-- TABLA -->
+        <div class="table-container">
+          <table style="width: 100%; border-collapse: collapse">
+            <thead>
+              <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6">
+                <th
+                  style="
+                    padding: 12px;
+                    text-align: left;
+                    font-weight: 600;
+                    color: #495057;
+                  ">
+                  Código
+                </th>
+                <th
+                  style="
+                    padding: 12px;
+                    text-align: left;
+                    font-weight: 600;
+                    color: #495057;
+                  ">
+                  Cliente
+                </th>
+                <th
+                  style="
+                    padding: 12px;
+                    text-align: left;
+                    font-weight: 600;
+                    color: #495057;
+                  ">
+                  DNI
+                </th>
+                <th
+                  style="
+                    padding: 12px;
+                    text-align: left;
+                    font-weight: 600;
+                    color: #495057;
+                  ">
+                  Entrada
+                </th>
+                <th
+                  style="
+                    padding: 12px;
+                    text-align: left;
+                    font-weight: 600;
+                    color: #495057;
+                  ">
+                  Salida
+                </th>
+                <th
+                  style="
+                    padding: 12px;
+                    text-align: left;
+                    font-weight: 600;
+                    color: #495057;
+                  ">
+                  Pre-checking
+                </th>
+                <th
+                  style="
+                    padding: 12px;
+                    text-align: center;
+                    font-weight: 600;
+                    color: #495057;
+                  ">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Cargando -->
+              <tr *ngIf="cargandoReservas">
+                <td
+                  colspan="7"
+                  style="text-align: center; padding: 40px; color: #888">
+                  <i
+                    class="bi bi-hourglass-split"
+                    style="
+                      font-size: 32px;
+                      display: block;
+                      margin-bottom: 10px;
+                    "></i>
+                  Cargando reservas...
+                </td>
+              </tr>
+
+              <!-- Sin datos -->
+              <tr *ngIf="!cargandoReservas && reservasFiltradas.length === 0">
+                <td
+                  colspan="7"
+                  style="text-align: center; padding: 40px; color: #888">
+                  <i
+                    class="bi bi-inbox"
+                    style="
+                      font-size: 32px;
+                      display: block;
+                      margin-bottom: 10px;
+                    "></i>
+                  No hay reservas disponibles
+                </td>
+              </tr>
+
+              <!-- Filas -->
+              <tr
+                *ngFor="let r of reservasFiltradas"
+                style="border-bottom: 1px solid #dee2e6">
+                <td style="padding: 12px">
+                  <code
+                    style="
+                      background: #f0f0f0;
+                      padding: 2px 8px;
+                      border-radius: 4px;
+                      font-size: 12px;
+                    ">
+                    {{ r.codigo_reserva }}
+                  </code>
+                </td>
+                <td style="padding: 12px">
+                  <strong>{{ r.nombre_cliente }}</strong>
+                  <small style="display: block; color: #888; font-size: 11px">{{
+                    r.apellidos_cliente || ""
+                  }}</small>
+                </td>
+                <td
+                  style="
+                    padding: 12px;
+                    font-size: 13px;
+                    font-family: monospace;
+                  ">
+                  {{ r.dni_cliente || "No registrado" }}
+                </td>
+                <td style="padding: 12px; font-size: 13px">
+                  {{ r.fecha_entrada | date: "dd/MM/yyyy" }}
+                </td>
+                <td style="padding: 12px; font-size: 13px">
+                  {{ r.fecha_salida | date: "dd/MM/yyyy" }}
+                </td>
+                <td style="padding: 12px; text-align: center">
+                  <span
+                    *ngIf="r.prechecking_realizado"
+                    style="color: #28a745; font-weight: 600">
+                    ✅ {{ r.fecha_prechecking | date: "dd/MM/yyyy" }}
+                  </span>
+                  <span *ngIf="!r.prechecking_realizado" style="color: #999">
+                    ❌ Pendiente
+                  </span>
+                </td>
+                <td style="padding: 12px; text-align: center">
+                  <div
+                    style="
+                      display: flex;
+                      gap: 5px;
+                      justify-content: center;
+                      flex-wrap: wrap;
+                    ">
+                    <!-- Ver detalles -->
+                    <button
+                      class="btn-edit"
+                      (click)="verReserva(r)"
+                      title="Ver detalles"
+                      style="
+                        padding: 4px 8px;
+                        border: none;
+                        background: #e9ecef;
+                        border-radius: 4px;
+                        cursor: pointer;
+                      ">
+                      👁️
+                    </button>
+
+                    <!-- Editar -->
+                    <button
+                      class="btn-edit"
+                      (click)="abrirModalEditarReserva(r)"
+                      title="Editar"
+                      style="
+                        padding: 4px 8px;
+                        border: none;
+                        background: #e9ecef;
+                        border-radius: 4px;
+                        cursor: pointer;
+                      ">
+                      ✏️
+                    </button>
+
+                    <!-- Reenviar email -->
+                    <button
+                      class="btn-toggle"
+                      (click)="reenviarEmailConfirmacion(r)"
+                      title="Reenviar email"
+                      style="
+                        padding: 4px 8px;
+                        border: none;
+                        background: #e9ecef;
+                        border-radius: 4px;
+                        cursor: pointer;
+                      ">
+                      📧
+                    </button>
+
+                    <!-- ✅ PRECHECKING - NUEVO BOTÓN -->
+                    <button
+                      class="btn-prechecking"
+                      (click)="verPrechecking(r)"
+                      [disabled]="r.prechecking_realizado"
+                      [title]="
+                        r.prechecking_realizado
+                          ? '✅ Pre-checking ya realizado'
+                          : '🔓 Realizar Pre-checking'
+                      "
+                      style="
+                        padding: 4px 8px;
+                        border: none;
+                        border-radius: 4px;
+                        font-size: 12px;
+                        font-weight: 500;
+                        transition: all 0.3s;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 3px;
+                      "
+                      [style.background]="
+                        r.prechecking_realizado ? '#d4edda' : '#ffc107'
+                      "
+                      [style.color]="
+                        r.prechecking_realizado ? '#155724' : '#212529'
+                      "
+                      [style.opacity]="r.prechecking_realizado ? '0.7' : '1'"
+                      [style.cursor]="
+                        r.prechecking_realizado ? 'not-allowed' : 'pointer'
+                      ">
+                      <i
+                        class="bi"
+                        [class.bi-check-circle]="r.prechecking_realizado"
+                        [class.bi-arrow-right-circle]="!r.prechecking_realizado"
+                        style="font-size: 14px">
+                      </i>
+                      {{ r.prechecking_realizado ? "Hecho" : "Pre-check" }}
+                    </button>
+
+                    <!-- Eliminar -->
+                    <button
+                      class="btn-delete"
+                      (click)="eliminarReserva(r.id)"
+                      title="Eliminar"
+                      style="
+                        padding: 4px 8px;
+                        border: none;
+                        background: #f8d7da;
+                        border-radius: 4px;
+                        cursor: pointer;
+                      ">
+                      🗑️
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- MODAL VER RESERVA -->
+        <div
+          class="modal-overlay"
+          *ngIf="modalReservaAbierto"
+          (click)="cerrarModalReserva()">
+          <div
+            class="modal"
+            style="
+              max-width: 600px;
+              margin: 50px auto;
+              background: white;
+              border-radius: 12px;
+              box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            "
+            (click)="$event.stopPropagation()">
+            <div
+              class="modal-header"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 24px;
+                border-bottom: 1px solid #e9ecef;
+              ">
+              <h3 style="margin: 0; color: #8b7355">📋 Detalles de Reserva</h3>
+              <button
+                class="modal-close"
+                (click)="cerrarModalReserva()"
+                style="
+                  background: none;
+                  border: none;
+                  font-size: 24px;
+                  cursor: pointer;
+                ">
+                ✕
+              </button>
+            </div>
+            <div
+              class="modal-body"
+              style="padding: 24px"
+              *ngIf="reservaSeleccionada">
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr;
+                  gap: 16px;
+                ">
+                <div>
+                  <strong>Código:</strong><br />{{
+                    reservaSeleccionada.codigo_reserva
+                  }}
+                </div>
+
+                <div>
+                  <strong>Cliente:</strong><br />{{
+                    reservaSeleccionada.nombre_cliente
+                  }}
+                  {{ reservaSeleccionada.apellidos_cliente }}
+                </div>
+                <div>
+                  <strong>DNI:</strong><br />{{
+                    reservaSeleccionada.dni_cliente || "No registrado"
+                  }}
+                </div>
+                <div>
+                  <strong>Email:</strong><br />{{
+                    reservaSeleccionada.email_cliente
+                  }}
+                </div>
+                <div>
+                  <strong>Teléfono:</strong><br />{{
+                    reservaSeleccionada.telefono_cliente
+                  }}
+                </div>
+                <div>
+                  <strong>Entrada:</strong><br />{{
+                    reservaSeleccionada.fecha_entrada | date: "dd/MM/yyyy"
+                  }}
+                </div>
+                <div>
+                  <strong>Salida:</strong><br />{{
+                    reservaSeleccionada.fecha_salida | date: "dd/MM/yyyy"
+                  }}
+                </div>
+                <div>
+                  <strong>Huespedes:</strong><br />{{
+                    reservaSeleccionada.adultos
+                  }}
+                  adultos, {{ reservaSeleccionada.ninos || 0 }} niños
+                </div>
+                <div>
+                  <strong>Importe:</strong><br /><strong
+                    style="color: #8b7355; font-size: 20px"
+                    >{{ reservaSeleccionada.importe_total }}€</strong
+                  >
+                </div>
+                <div style="grid-column: span 2">
+                  <strong>Pre-checking:</strong><br />
+                  <span
+                    *ngIf="reservaSeleccionada.prechecking_realizado"
+                    style="color: #28a745"
+                    >✅ Realizado el
+                    {{
+                      reservaSeleccionada.fecha_prechecking
+                        | date: "dd/MM/yyyy HH:mm"
+                    }}</span
+                  >
+                  <span
+                    *ngIf="!reservaSeleccionada.prechecking_realizado"
+                    style="color: #999"
+                    >❌ No realizado</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div
+              class="modal-footer"
+              style="
+                padding: 16px 24px;
+                border-top: 1px solid #e9ecef;
+                display: flex;
+                gap: 10px;
+                justify-content: flex-end;
+              ">
+              <button
+                class="btn-secondary"
+                (click)="cerrarModalReserva()"
+                style="
+                  padding: 8px 20px;
+                  border: 1px solid #ddd;
+                  background: white;
+                  border-radius: 4px;
+                  cursor: pointer;
+                ">
+                Cerrar
+              </button>
+              <button
+                class="btn-primary"
+                (click)="cerrarModalReserva()"
+                style="
+                  padding: 8px 20px;
+                  border: none;
+                  background: #8b7355;
+                  color: white;
+                  border-radius: 4px;
+                  cursor: pointer;
+                ">
+                ✅ Aceptar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODAL EDITAR RESERVA -->
+        <div
+          class="modal-overlay"
+          *ngIf="modalEditarReservaAbierto"
+          (click)="cerrarModalEditarReserva()">
+          <div
+            class="modal modal-editar-reserva"
+            style="
+              max-width: 600px;
+              margin: 50px auto;
+              background: white;
+              border-radius: 12px;
+              box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            "
+            (click)="$event.stopPropagation()">
+            <div
+              class="modal-header"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 24px;
+                border-bottom: 1px solid #e9ecef;
+              ">
+              <h3 style="margin: 0; color: #8b7355">✏️ Editar Reserva</h3>
+              <button
+                class="modal-close"
+                (click)="cerrarModalEditarReserva()"
+                style="
+                  background: none;
+                  border: none;
+                  font-size: 24px;
+                  cursor: pointer;
+                ">
+                ✕
+              </button>
+            </div>
+            <div
+              class="modal-body"
+              style="padding: 24px"
+              *ngIf="reservaSeleccionada">
+              <div
+                class="form-row"
+                style="display: flex; gap: 15px; margin-bottom: 15px">
+                <div class="form-group" style="flex: 1">
+                  <label
+                    style="
+                      display: block;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #666;
+                      margin-bottom: 4px;
+                    "
+                    >Código</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    [value]="reservaSeleccionada.codigo_reserva"
+                    disabled
+                    style="
+                      width: 100%;
+                      padding: 8px 12px;
+                      border: 1px solid #ddd;
+                      border-radius: 4px;
+                      background: #f5f5f5;
+                    " />
+                </div>
+              </div>
+              <div
+                class="form-row"
+                style="display: flex; gap: 15px; margin-bottom: 15px">
+                <div class="form-group" style="flex: 1">
+                  <label
+                    style="
+                      display: block;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #666;
+                      margin-bottom: 4px;
+                    "
+                    >Nombre</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="reservaSeleccionada.nombre_cliente"
+                    style="
+                      width: 100%;
+                      padding: 8px 12px;
+                      border: 1px solid #ddd;
+                      border-radius: 4px;
+                    " />
+                </div>
+                <div class="form-group" style="flex: 1">
+                  <label
+                    style="
+                      display: block;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #666;
+                      margin-bottom: 4px;
+                    "
+                    >Apellidos</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="reservaSeleccionada.apellidos_cliente"
+                    style="
+                      width: 100%;
+                      padding: 8px 12px;
+                      border: 1px solid #ddd;
+                      border-radius: 4px;
+                    " />
+                </div>
+              </div>
+              <div
+                class="form-row"
+                style="display: flex; gap: 15px; margin-bottom: 15px">
+                <div class="form-group" style="flex: 1">
+                  <label
+                    style="
+                      display: block;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #666;
+                      margin-bottom: 4px;
+                    "
+                    >Email</label
+                  >
+                  <input
+                    type="email"
+                    class="form-control"
+                    [(ngModel)]="reservaSeleccionada.email_cliente"
+                    style="
+                      width: 100%;
+                      padding: 8px 12px;
+                      border: 1px solid #ddd;
+                      border-radius: 4px;
+                    " />
+                </div>
+                <div class="form-group" style="flex: 1">
+                  <label
+                    style="
+                      display: block;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #666;
+                      margin-bottom: 4px;
+                    "
+                    >Teléfono</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="reservaSeleccionada.telefono_cliente"
+                    style="
+                      width: 100%;
+                      padding: 8px 12px;
+                      border: 1px solid #ddd;
+                      border-radius: 4px;
+                    " />
+                </div>
+              </div>
+              <div
+                class="form-row"
+                style="display: flex; gap: 15px; margin-bottom: 15px">
+                <div class="form-group" style="flex: 1">
+                  <label
+                    style="
+                      display: block;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #666;
+                      margin-bottom: 4px;
+                    "
+                    >DNI</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="reservaSeleccionada.dni_cliente"
+                    style="
+                      width: 100%;
+                      padding: 8px 12px;
+                      border: 1px solid #ddd;
+                      border-radius: 4px;
+                    " />
+                </div>
+                <div class="form-group" style="flex: 1">
+                  <label
+                    style="
+                      display: block;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #666;
+                      margin-bottom: 4px;
+                    "
+                    >Pre-checking</label
+                  >
+                  <select
+                    class="form-control"
+                    [(ngModel)]="reservaSeleccionada.prechecking_realizado"
+                    style="
+                      width: 100%;
+                      padding: 8px 12px;
+                      border: 1px solid #ddd;
+                      border-radius: 4px;
+                    ">
+                    <option [value]="false">❌ No realizado</option>
+                    <option [value]="true">✅ Realizado</option>
+                  </select>
+                </div>
+              </div>
+              <div
+                class="form-row"
+                style="display: flex; gap: 15px; margin-bottom: 15px">
+                <div class="form-group" style="flex: 1">
+                  <label
+                    style="
+                      display: block;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #666;
+                      margin-bottom: 4px;
+                    "
+                    >Fecha entrada</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    [(ngModel)]="reservaSeleccionada.fecha_entrada"
+                    style="
+                      width: 100%;
+                      padding: 8px 12px;
+                      border: 1px solid #ddd;
+                      border-radius: 4px;
+                    " />
+                </div>
+                <div class="form-group" style="flex: 1">
+                  <label
+                    style="
+                      display: block;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #666;
+                      margin-bottom: 4px;
+                    "
+                    >Fecha salida</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    [(ngModel)]="reservaSeleccionada.fecha_salida"
+                    style="
+                      width: 100%;
+                      padding: 8px 12px;
+                      border: 1px solid #ddd;
+                      border-radius: 4px;
+                    " />
+                </div>
+              </div>
+              <div
+                class="form-row"
+                style="display: flex; gap: 15px; margin-bottom: 15px">
+                <div class="form-group" style="flex: 1">
+                  <label
+                    style="
+                      display: block;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #666;
+                      margin-bottom: 4px;
+                    "
+                    >Adultos</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    [(ngModel)]="reservaSeleccionada.adultos"
+                    min="1"
+                    style="
+                      width: 100%;
+                      padding: 8px 12px;
+                      border: 1px solid #ddd;
+                      border-radius: 4px;
+                    " />
+                </div>
+                <div class="form-group" style="flex: 1">
+                  <label
+                    style="
+                      display: block;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #666;
+                      margin-bottom: 4px;
+                    "
+                    >Niños</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    [(ngModel)]="reservaSeleccionada.ninos"
+                    min="0"
+                    style="
+                      width: 100%;
+                      padding: 8px 12px;
+                      border: 1px solid #ddd;
+                      border-radius: 4px;
+                    " />
+                </div>
+              </div>
+              <div
+                class="form-row"
+                style="display: flex; gap: 15px; margin-bottom: 15px">
+                <div class="form-group" style="flex: 1">
+                  <label
+                    style="
+                      display: block;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #666;
+                      margin-bottom: 4px;
+                    "
+                    >Importe total (€)</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    [(ngModel)]="reservaSeleccionada.importe_total"
+                    min="0"
+                    step="0.01"
+                    style="
+                      width: 100%;
+                      padding: 8px 12px;
+                      border: 1px solid #ddd;
+                      border-radius: 4px;
+                    " />
+                </div>
+                <div
+                  class="form-group"
+                  style="flex: 1; display: flex; align-items: center">
+                  <label
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                      font-size: 12px;
+                      font-weight: 600;
+                      color: #666;
+                    ">
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="reservaSeleccionada.desayuno" />
+                    Incluye desayuno
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div
+              class="modal-footer"
+              style="
+                padding: 16px 24px;
+                border-top: 1px solid #e9ecef;
+                display: flex;
+                gap: 10px;
+                justify-content: flex-end;
+              ">
+              <button
+                class="btn-secondary"
+                (click)="cerrarModalEditarReserva()"
+                style="
+                  padding: 8px 20px;
+                  border: 1px solid #ddd;
+                  background: white;
+                  border-radius: 4px;
+                  cursor: pointer;
+                ">
+                Cancelar
+              </button>
+              <button
+                class="btn-primary"
+                (click)="guardarEdicionReserva()"
+                style="
+                  padding: 8px 20px;
+                  border: none;
+                  background: #8b7355;
+                  color: white;
+                  border-radius: 4px;
+                  cursor: pointer;
+                ">
+                💾 Guardar cambios
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRECHECKINGS (placeholder) -->
+      <div *ngIf="seccionActual === 'precheckings'" class="seccion">
+        <div class="list-header">
+          <h2>✅ Gestión de Pre-checkings</h2>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Reserva</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of precheckings">
+                <td>{{ p.reserva }}</td>
+                <td>{{ p.cliente }}</td>
+                <td>{{ p.fecha }}</td>
+                <td>
+                  <span
+                    class="badge"
+                    [class.pendiente]="p.estado === 'pendiente'"
+                    [class.completado]="p.estado === 'completado'">
+                    {{ p.estado }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn-edit" title="Ver">👁️</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- USUARIOS -->
+      <div *ngIf="seccionActual === 'usuarios'" class="seccion">
+        <div class="list-header">
+          <h2>👥 Gestión de Usuarios</h2>
+          <button class="btn-primary" (click)="abrirModalNuevoUsuario()">
+            + Añadir usuario
+          </button>
+        </div>
+
+        <!-- TABLA DE USUARIOS -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Último acceso</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Cargando -->
+              <tr *ngIf="cargandoUsuarios">
+                <td
+                  colspan="7"
+                  style="text-align: center; padding: 40px; color: #888">
+                  <i
+                    class="bi bi-hourglass-split"
+                    style="
+                      font-size: 32px;
+                      display: block;
+                      margin-bottom: 10px;
+                    "></i>
+                  Cargando usuarios...
+                </td>
+              </tr>
+
+              <!-- Sin datos -->
+              <tr *ngIf="!cargandoUsuarios && usuarios.length === 0">
+                <td
+                  colspan="7"
+                  style="text-align: center; padding: 40px; color: #888">
+                  <i
+                    class="bi bi-people"
+                    style="
+                      font-size: 32px;
+                      display: block;
+                      margin-bottom: 10px;
+                    "></i>
+                  No hay usuarios disponibles
+                </td>
+              </tr>
+
+              <!-- Filas -->
+              <tr *ngFor="let u of usuarios">
+                <td>{{ u.id }}</td>
+                <td>
+                  <strong>{{ u.usuario }}</strong>
+                </td>
+                <td>{{ u.nombre || "-" }}</td>
+                <td>{{ u.email }}</td>
+                <td>
+                  <span class="badge" [class.admin]="u.rol === 'admin'">
+                    {{ u.rol === "admin" ? "👑 Admin" : "👤 Usuario" }}
+                  </span>
+                </td>
+                <td style="font-size: 12px; color: #888">
+                  {{
+                    u.ultimo_acceso
+                      ? (u.ultimo_acceso | date: "dd/MM/yyyy HH:mm")
+                      : "Nunca"
+                  }}
+                </td>
+                <td>
+                  <div class="acciones-botones">
+                    <button
+                      class="btn-edit"
+                      (click)="abrirModalEditarUsuario(u)"
+                      title="Editar">
+                      ✏️
+                    </button>
+                    <button
+                      class="btn-delete"
+                      (click)="eliminarUsuario(u.id)"
+                      [disabled]="u.id === admin?.id"
+                      [title]="
+                        u.id === admin?.id
+                          ? 'No puedes eliminar tu propio usuario'
+                          : 'Eliminar usuario'
+                      "
+                      [style.opacity]="u.id === admin?.id ? '0.5' : '1'"
+                      [style.cursor]="
+                        u.id === admin?.id ? 'not-allowed' : 'pointer'
+                      ">
+                      🗑️
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MODAL USUARIO - VERSIÓN MEJORADA -->
+      <div
+        class="modal-overlay"
+        *ngIf="modalUsuarioAbierto"
+        (click)="cerrarModalUsuario()">
+        <div
+          class="modal"
+          style="
+            max-width: 550px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          "
+          (click)="$event.stopPropagation()">
+          <div
+            class="modal-header"
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 20px 24px;
+              border-bottom: 1px solid #e9ecef;
+            ">
+            <h3 style="margin: 0; color: #8b7355">
+              {{ esEdicionUsuario ? "✏️ Editar Usuario" : "➕ Nuevo Usuario" }}
+            </h3>
+            <button
+              class="modal-close"
+              (click)="cerrarModalUsuario()"
+              style="
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+              ">
+              ✕
+            </button>
+          </div>
+          <div
+            class="modal-body"
+            style="padding: 24px"
+            *ngIf="usuarioSeleccionado">
+            <!-- Usuario -->
+            <div class="form-group" style="margin-bottom: 15px">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #666;
+                  margin-bottom: 4px;
+                ">
+                Usuario <span class="required">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="usuarioSeleccionado.usuario"
+                [disabled]="esEdicionUsuario"
+                placeholder="Nombre de usuario (sin espacios)"
+                style="
+                  width: 100%;
+                  padding: 10px 12px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                " />
+              <small
+                *ngIf="esEdicionUsuario"
+                style="color: #999; font-size: 11px">
+                El nombre de usuario no se puede modificar
+              </small>
+              <small
+                *ngIf="!esEdicionUsuario"
+                style="color: #999; font-size: 11px">
+                Mínimo 3 caracteres, solo letras y números
+              </small>
+            </div>
+
+            <!-- Nombre -->
+            <div class="form-group" style="margin-bottom: 15px">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #666;
+                  margin-bottom: 4px;
+                ">
+                Nombre completo
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="usuarioSeleccionado.nombre"
+                placeholder="Nombre completo del usuario"
+                style="
+                  width: 100%;
+                  padding: 10px 12px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                " />
+            </div>
+
+            <!-- Email -->
+            <div class="form-group" style="margin-bottom: 15px">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #666;
+                  margin-bottom: 4px;
+                ">
+                Email <span class="required">*</span>
+              </label>
+              <input
+                type="email"
+                class="form-control"
+                [(ngModel)]="usuarioSeleccionado.email"
+                placeholder="correo@ejemplo.com"
+                style="
+                  width: 100%;
+                  padding: 10px 12px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                " />
+            </div>
+
+            <!-- Rol -->
+            <div class="form-group" style="margin-bottom: 15px">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #666;
+                  margin-bottom: 4px;
+                ">
+                Rol
+              </label>
+              <select
+                class="form-control"
+                [(ngModel)]="usuarioSeleccionado.rol"
+                style="
+                  width: 100%;
+                  padding: 10px 12px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                ">
+                <option value="admin">👑 Administrador</option>
+                <option value="user">👤 Usuario</option>
+              </select>
+            </div>
+
+            <!-- Contraseña - Creación -->
+            <div
+              class="form-group"
+              style="margin-bottom: 15px"
+              *ngIf="!esEdicionUsuario">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #666;
+                  margin-bottom: 4px;
+                ">
+                Contraseña <span class="required">*</span>
+              </label>
+              <input
+                type="password"
+                class="form-control"
+                [(ngModel)]="nuevaContrasena"
+                (input)="evaluarFuerzaContrasena()"
+                placeholder="Mínimo 6 caracteres"
+                style="
+                  width: 100%;
+                  padding: 10px 12px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                " />
+
+              <!-- Indicador de fuerza de contraseña -->
+              <div
+                *ngIf="nuevaContrasena && nuevaContrasena.length > 0"
+                style="margin-top: 8px">
+                <div
+                  style="
+                    display: flex;
+                    gap: 4px;
+                    height: 6px;
+                    border-radius: 3px;
+                    overflow: hidden;
+                    background: #e9ecef;
+                  ">
+                  <div
+                    style="flex: 1; background: #dc3545"
+                    [style.opacity]="fuerzaContrasena >= 1 ? 1 : 0.2"></div>
+                  <div
+                    style="flex: 1; background: #ffc107"
+                    [style.opacity]="fuerzaContrasena >= 2 ? 1 : 0.2"></div>
+                  <div
+                    style="flex: 1; background: #28a745"
+                    [style.opacity]="fuerzaContrasena >= 3 ? 1 : 0.2"></div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 4px;
+                    font-size: 11px;
+                  ">
+                  <span style="color: #dc3545">Débil</span>
+                  <span style="color: #ffc107">Media</span>
+                  <span style="color: #28a745">Fuerte</span>
+                  <span
+                    style="font-weight: 600"
+                    [style.color]="obtenerColorFuerza()">
+                    {{ obtenerTextoFuerza() }} </span
+                  >>
+                </div>
+              </div>
+              <small style="color: #999; font-size: 11px">
+                Mínimo 6 caracteres. Incluye mayúsculas, minúsculas y números
+                para mayor seguridad.
+              </small>
+            </div>
+
+            <!-- Confirmar Contraseña - Creación -->
+            <div
+              class="form-group"
+              style="margin-bottom: 15px"
+              *ngIf="!esEdicionUsuario">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #666;
+                  margin-bottom: 4px;
+                ">
+                Confirmar Contraseña <span class="required">*</span>
+              </label>
+              <input
+                type="password"
+                class="form-control"
+                [(ngModel)]="confirmarContrasena"
+                (input)="validarContrasenas()"
+                placeholder="Repite la contraseña"
+                style="
+                  width: 100%;
+                  padding: 10px 12px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                " />
+              <div
+                *ngIf="confirmarContrasena && nuevaContrasena"
+                style="margin-top: 4px">
+                <span
+                  *ngIf="nuevaContrasena !== confirmarContrasena"
+                  style="color: #dc3545; font-size: 12px">
+                  ❌ Las contraseñas no coinciden
+                </span>
+                <span
+                  *ngIf="nuevaContrasena === confirmarContrasena"
+                  style="color: #28a745; font-size: 12px">
+                  ✅ Las contraseñas coinciden
+                </span>
+              </div>
+            </div>
+
+            <!-- Edición: Cambiar contraseña (opcional) -->
+            <div
+              class="form-group"
+              style="margin-bottom: 15px"
+              *ngIf="esEdicionUsuario">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #666;
+                  margin-bottom: 4px;
+                ">
+                Nueva contraseña (opcional)
+              </label>
+              <input
+                type="password"
+                class="form-control"
+                [(ngModel)]="nuevaContrasena"
+                (input)="evaluarFuerzaContrasena()"
+                placeholder="Dejar vacío para mantener la actual"
+                style="
+                  width: 100%;
+                  padding: 10px 12px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                " />
+
+              <!-- Indicador de fuerza de contraseña - CORREGIDO -->
+              <div
+                *ngIf="nuevaContrasena && nuevaContrasena.length > 0"
+                style="margin-top: 8px">
+                <div
+                  style="
+                    display: flex;
+                    gap: 4px;
+                    height: 6px;
+                    border-radius: 3px;
+                    overflow: hidden;
+                    background: #e9ecef;
+                  ">
+                  <div
+                    style="flex: 1; background: #dc3545"
+                    [style.opacity]="fuerzaContrasena >= 1 ? 1 : 0.2"></div>
+                  <div
+                    style="flex: 1; background: #ffc107"
+                    [style.opacity]="fuerzaContrasena >= 2 ? 1 : 0.2"></div>
+                  <div
+                    style="flex: 1; background: #28a745"
+                    [style.opacity]="fuerzaContrasena >= 3 ? 1 : 0.2"></div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 4px;
+                    font-size: 11px;
+                  ">
+                  <span style="color: #dc3545">Débil</span>
+                  <span style="color: #ffc107">Media</span>
+                  <span style="color: #28a745">Fuerte</span>
+                  <!-- ✅ Usando ngStyle para el color -->
+                  <span
+                    style="font-weight: 600"
+                    [ngStyle]="{
+                      color:
+                        fuerzaContrasena <= 1
+                          ? '#dc3545'
+                          : fuerzaContrasena === 2
+                            ? '#ffc107'
+                            : fuerzaContrasena >= 3
+                              ? '#28a745'
+                              : '#999',
+                    }">
+                    {{ obtenerTextoFuerza() }}
+                  </span>
+                </div>
+              </div>
+              <small style="color: #999; font-size: 11px">
+                Solo si quieres cambiar la contraseña
+              </small>
+            </div>
+
+            <!-- Mensaje de error -->
+            <div
+              *ngIf="mensajeErrorUsuario"
+              style="
+                background: #f8d7da;
+                color: #721c24;
+                padding: 10px 15px;
+                border-radius: 4px;
+                margin-top: 10px;
+                font-size: 14px;
+              ">
+              <i class="bi bi-exclamation-circle"></i> {{ mensajeErrorUsuario }}
+            </div>
+          </div>
+          <div
+            class="modal-footer"
+            style="
+              padding: 16px 24px;
+              border-top: 1px solid #e9ecef;
+              display: flex;
+              gap: 10px;
+              justify-content: flex-end;
+            ">
+            <button
+              class="btn-secondary"
+              (click)="cerrarModalUsuario()"
+              style="
+                padding: 8px 20px;
+                border: 1px solid #ddd;
+                background: white;
+                border-radius: 4px;
+                cursor: pointer;
+              ">
+              Cancelar
+            </button>
+            <button
+              class="btn-primary"
+              (click)="guardarUsuario()"
+              [disabled]="guardandoUsuario || !formularioUsuarioValido()"
+              style="
+                padding: 8px 20px;
+                border: none;
+                background: #8b7355;
+                color: white;
+                border-radius: 4px;
+                cursor: pointer;
+              ">
+              {{ guardandoUsuario ? "⏳ Guardando..." : "💾 Guardar" }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONFIGURACIÓN -->
+      <div *ngIf="seccionActual === 'configuracion'" class="seccion">
+        <div class="config-container">
+          <div class="config-card">
+            <div class="config-header">
+              <h2>⚙️ Configuración del Sitio</h2>
+              <p class="config-subtitle">
+                Gestiona todos los textos y contenido del sitio web por
+                secciones
+              </p>
+            </div>
+
+            <!-- PESTAÑAS -->
+            <div class="config-tabs">
+              <button
+                *ngFor="let seccion of seccionesLista"
+                class="tab-btn"
+                [class.active]="seccionConfigActual === seccion"
+                (click)="cargarSeccionConfig(seccion)">
+                {{ obtenerNombreSeccion(seccion) }}
+              </button>
+            </div>
+
+            <!-- CONTENIDO DE LA PESTAÑA -->
+            <div class="tab-content" *ngIf="seccionConfigActual">
+              <div class="tab-header">
+                <h3>{{ obtenerNombreSeccion(seccionConfigActual) }}</h3>
+                <span class="tab-badge">{{ seccionConfigActual }}</span>
+              </div>
+
+              <!-- ✅ SECCIÓN DE IMAGEN - Solo para la sección 'hero' -->
+              <div
+                *ngIf="seccionConfigActual === 'hero'"
+                class="config-image-section">
+                <div class="config-image-header">
+                  <h4>📷 Imagen de fondo del Hero</h4>
+                  <p class="image-help">
+                    Sube una imagen para el fondo del hero. Recomendado:
+                    1920x1080px
+                  </p>
+                </div>
+
+                <div
+                  class="image-upload-area"
+                  (click)="abrirSelectorImagenHero()">
+                  <!-- Vista previa de la imagen -->
+                  <div
+                    class="image-preview"
+                    *ngIf="seccionConfigData['hero_imagen']">
+                    <img
+                      [src]="
+                        'http://localhost:3000' +
+                        seccionConfigData['hero_imagen']
+                      "
+                      alt="Imagen del hero" />
+                    <button
+                      class="btn-remove-image"
+                      (click)="$event.stopPropagation(); eliminarImagenHero()"
+                      title="Eliminar imagen">
+                      ✕
+                    </button>
+                  </div>
+                  <!-- Placeholder cuando no hay imagen -->
+                  <div
+                    class="upload-placeholder"
+                    *ngIf="!seccionConfigData['hero_imagen']">
+                    <i class="bi bi-image"></i>
+                    <p>Haz clic para seleccionar una imagen</p>
+                    <small>Formatos: JPG, PNG, WEBP (máx. 5MB)</small>
+                  </div>
+                  <!-- Input oculto -->
+                  <input
+                    type="file"
+                    #fileInputHero
+                    accept="image/*"
+                    (change)="onImagenHeroSeleccionada($event)"
+                    class="file-input"
+                    style="display: none" />
+                </div>
+
+                <!-- Estado de subida -->
+                <div *ngIf="subiendoImagenHero" class="uploading-status">
+                  <i class="bi bi-hourglass-split"></i> Subiendo imagen...
+                </div>
+
+                <!-- Mostrar ruta de la imagen -->
+                <div
+                  *ngIf="seccionConfigData['hero_imagen']"
+                  class="image-info">
+                  <small>Ruta: {{ seccionConfigData["hero_imagen"] }}</small>
+                </div>
+              </div>
+
+              <!-- CAMPOS DE TEXTO - AQUÍ ESTÁ EL CAMBIO (trackBy) -->
+              <div class="config-fields">
+                <div
+                  *ngFor="
+                    let item of seccionConfigData | keyvalue;
+                    trackBy: trackByKey
+                  "
+                  class="config-item">
+                  <!-- Saltar hero_imagen porque ya se muestra arriba -->
+                  <ng-container *ngIf="item.key !== 'hero_imagen'">
+                    <label [for]="'config-' + item.key">
+                      {{ formatearClave(item.key) }}
+                      <span class="campo-clave">{{ item.key }}</span>
+                    </label>
+                    <!-- Campo de texto -->
+                    <input
+                      *ngIf="!esCampoLargo(item.value)"
+                      [id]="'config-' + item.key"
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="seccionConfigData[item.key]"
+                      placeholder="Introduce el texto para {{
+                        formatearClave(item.key)
+                      }}" />
+                    <!-- Área de texto para campos largos -->
+                    <textarea
+                      *ngIf="esCampoLargo(item.value)"
+                      [id]="'config-' + item.key"
+                      class="form-control"
+                      rows="3"
+                      [(ngModel)]="seccionConfigData[item.key]"
+                      placeholder="Introduce el texto para {{
+                        formatearClave(item.key)
+                      }}"></textarea>
+                  </ng-container>
+                </div>
+              </div>
+
+              <!-- ACCIONES -->
+              <div class="config-actions">
+                <button
+                  class="btn-guardar"
+                  (click)="guardarSeccionConfig()"
+                  [disabled]="guardandoConfig || subiendoImagenHero">
+                  <i
+                    class="bi"
+                    [class.bi-check-circle]="
+                      !guardandoConfig && !subiendoImagenHero
+                    "
+                    [class.bi-hourglass-split]="
+                      guardandoConfig || subiendoImagenHero
+                    "></i>
+                  {{
+                    guardandoConfig
+                      ? "Guardando..."
+                      : subiendoImagenHero
+                        ? "Subiendo imagen..."
+                        : "💾 Guardar cambios"
+                  }}
+                </button>
+                <button class="btn-restaurar" (click)="recargarSeccionConfig()">
+                  <i class="bi bi-arrow-counterclockwise"></i> 🔄 Recargar
+                </button>
+              </div>
+
+              <!-- Mensaje de éxito/error -->
+              <div
+                *ngIf="mensajeConfig"
+                class="mensaje-config"
+                [class.success]="mensajeConfigExito">
+                <i
+                  class="bi"
+                  [class.bi-check-circle]="mensajeConfigExito"
+                  [class.bi-exclamation-circle]="!mensajeConfigExito"></i>
+                {{ mensajeConfig }}
+              </div>
+            </div>
+
+            <!-- Estado vacío -->
+            <div
+              *ngIf="!seccionConfigActual && seccionesLista.length === 0"
+              class="config-empty">
+              <i class="bi bi-inbox"></i>
+              <p>No hay secciones de configuración disponibles</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div
+    class="sidebar-overlay"
+    *ngIf="menuAbierto"
+    (click)="menuAbierto = false"></div>
+</div>
+
+<!-- MODAL HABITACIONES -->
+<div
+  class="modal-overlay"
+  *ngIf="modalHabitacionAbierto"
+  (click)="cerrarModalHabitacion()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ esEdicion ? "✏️ Editar Habitación" : "➕ Nueva Habitación" }}</h2>
+      <button class="modal-close" (click)="cerrarModalHabitacion()">✕</button>
+    </div>
+
+    <div class="modal-body" *ngIf="habitacionSeleccionada">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre <span class="required">*</span></label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="habitacionSeleccionada.nombre"
+            placeholder="Ej: Habitación Doble Superior" />
+        </div>
+        <div class="form-group">
+          <label>Precio/noche <span class="required">*</span></label>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="habitacionSeleccionada.precio"
+            placeholder="120" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Descripción <span class="required">*</span></label>
+        <textarea
+          class="form-control"
+          [(ngModel)]="habitacionSeleccionada.descripcion"
+          rows="3"
+          placeholder="Descripción de la habitación..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Capacidad Adultos</label>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="habitacionSeleccionada.capacidad_adultos"
+            min="1"
+            max="10" />
+        </div>
+        <div class="form-group">
+          <label>Capacidad Niños</label>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="habitacionSeleccionada.capacidad_ninos"
+            min="0"
+            max="10" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Características (separadas por coma)</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="caracteristicasInput"
+          placeholder="WiFi, TV, Aire acondicionado" />
+      </div>
+
+      <div class="form-group">
+        <label>Imagen</label>
+        <div
+          *ngIf="habitacionSeleccionada.imagen && !imagenHabitacion"
+          style="margin-bottom: 12px">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 12px;
+              background: #f8f9fa;
+              padding: 10px 15px;
+              border-radius: 6px;
+              border: 1px solid #e9ecef;
+            ">
+            <img
+              [src]="'http://localhost:3000' + habitacionSeleccionada.imagen"
+              alt="Imagen actual"
+              style="
+                width: 60px;
+                height: 60px;
+                object-fit: cover;
+                border-radius: 4px;
+                border: 1px solid #ddd;
+              " />
+            <div>
+              <div style="font-weight: 600; color: #333; font-size: 13px">
+                Imagen actual
+              </div>
+              <div style="font-size: 12px; color: #888; word-break: break-all">
+                {{
+                  habitacionSeleccionada.imagen.split("/").pop() ||
+                    habitacionSeleccionada.imagen
+                }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="image-upload-area">
+          <div class="image-preview" *ngIf="previewImagenHabitacion">
+            <img [src]="previewImagenHabitacion" alt="Vista previa" />
+            <button
+              class="btn-remove-image"
+              (click)="previewImagenHabitacion = null; imagenHabitacion = null">
+              ✕
+            </button>
+          </div>
+          <div class="upload-placeholder" *ngIf="!previewImagenHabitacion">
+            <i class="bi bi-image"></i>
+            <p>Haz clic para seleccionar una nueva imagen</p>
+            <small style="color: #999; font-size: 12px"
+              >Formatos: JPG, PNG, WEBP (máx. 5MB)</small
+            >
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onImagenHabitacionSeleccionada($event)"
+            class="file-input" />
+        </div>
+        <small
+          *ngIf="habitacionSeleccionada.imagen && !imagenHabitacion"
+          class="text-muted">
+          💡 Sube una nueva imagen para reemplazar la actual
+        </small>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 16px">
+        <label
+          style="
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 14px;
+          "
+          >Estado</label
+        >
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+          ">
+          <div class="toggle-switch" style="flex-shrink: 0">
+            <label
+              style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                cursor: pointer;
+                margin: 0;
+              ">
+              <input
+                type="checkbox"
+                [(ngModel)]="habitacionSeleccionada.activo" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px">
+            <span
+              class="estado-badge"
+              [class.activo]="habitacionSeleccionada.activo"
+              [class.inactivo]="!habitacionSeleccionada.activo">
+              <span class="estado-icon">{{
+                habitacionSeleccionada.activo ? "✅" : "❌"
+              }}</span>
+              <span class="estado-texto">{{
+                habitacionSeleccionada.activo ? "Activo" : "Inactivo"
+              }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="cerrarModalHabitacion()">
+        Cancelar
+      </button>
+      <button
+        class="btn-primary"
+        (click)="guardarHabitacion()"
+        [disabled]="guardando || subiendoImagen || !habitacionSeleccionada">
+        {{
+          subiendoImagen
+            ? "⏳ Subiendo imagen..."
+            : guardando
+              ? "⏳ Guardando..."
+              : "💾 Guardar"
+        }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SERVICIOS -->
+<div
+  class="modal-overlay"
+  *ngIf="modalServicioAbierto"
+  (click)="cerrarModalServicio()">
+  <div class="modal modal-servicio" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>
+        {{ esEdicionServicio ? "✏️ Editar Servicio" : "➕ Nuevo Servicio" }}
+      </h2>
+      <button class="modal-close" (click)="cerrarModalServicio()">✕</button>
+    </div>
+
+    <div class="modal-body" *ngIf="servicioSeleccionado">
+      <div class="form-row">
+        <div class="form-group" style="flex: 2">
+          <label>Título <span class="required">*</span></label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="servicioSeleccionado.titulo"
+            placeholder="Ej: WiFi Gratuito" />
+        </div>
+        <div class="form-group" style="flex: 1">
+          <label>Orden</label>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="servicioSeleccionado.orden"
+            placeholder="Orden"
+            min="1" />
+          <small
+            class="text-muted"
+            style="display: block; margin-top: 4px; font-size: 11px">
+            Sugerido: {{ obtenerSiguienteOrden() }}
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Descripción <span class="required">*</span></label>
+        <textarea
+          class="form-control"
+          [(ngModel)]="servicioSeleccionado.descripcion"
+          rows="3"
+          placeholder="Descripción del servicio..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Selecciona un icono <span class="required">*</span></label>
+        <div class="iconos-grid">
+          <div
+            class="icono-option"
+            *ngFor="let icon of iconosDisponibles"
+            (click)="seleccionarIconoServicio(icon)"
+            [class.seleccionado]="servicioSeleccionado.icono === icon">
+            <i class="bi {{ icon }}"></i>
+            <span class="icono-nombre">{{ icon.replace("bi-", "") }}</span>
+          </div>
+        </div>
+        <small class="text-muted" style="display: block; margin-top: 8px">
+          Haz clic en un icono para seleccionarlo. Actual:
+          <strong *ngIf="servicioSeleccionado.icono">
+            <i class="bi {{ servicioSeleccionado.icono }}"></i>
+            {{ servicioSeleccionado.icono }}
+          </strong>
+          <span *ngIf="!servicioSeleccionado.icono" style="color: #999"
+            >Ninguno seleccionado</span
+          >
+        </small>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 16px">
+        <label
+          style="
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 14px;
+          "
+          >Estado</label
+        >
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+          ">
+          <div class="toggle-switch" style="flex-shrink: 0">
+            <label
+              style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                cursor: pointer;
+                margin: 0;
+              ">
+              <input
+                type="checkbox"
+                [(ngModel)]="servicioSeleccionado.activo" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px">
+            <span
+              class="estado-badge"
+              [class.activo]="servicioSeleccionado.activo"
+              [class.inactivo]="!servicioSeleccionado.activo">
+              <span class="estado-icon">{{
+                servicioSeleccionado.activo ? "✅" : "❌"
+              }}</span>
+              <span class="estado-texto">{{
+                servicioSeleccionado.activo ? "Activo" : "Inactivo"
+              }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="cerrarModalServicio()">
+        Cancelar
+      </button>
+      <button
+        class="btn-primary"
+        (click)="guardarServicio()"
+        [disabled]="guardando || !servicioSeleccionado">
+        {{ guardando ? "⏳ Guardando..." : "💾 Guardar" }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL REDES SOCIALES -->
+<div
+  class="modal-overlay"
+  *ngIf="modalRedSocialAbierto"
+  (click)="cerrarModalRedSocial()">
+  <div class="modal modal-red-social" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>
+        {{
+          esEdicionRedSocial ? "✏️ Editar Red Social" : "➕ Nueva Red Social"
+        }}
+      </h2>
+      <button class="modal-close" (click)="cerrarModalRedSocial()">✕</button>
+    </div>
+
+    <div class="modal-body" *ngIf="redSocialSeleccionada">
+      <div class="form-row">
+        <div class="form-group" style="flex: 2">
+          <label>Nombre <span class="required">*</span></label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="redSocialSeleccionada.nombre"
+            placeholder="Ej: Facebook" />
+        </div>
+        <div class="form-group" style="flex: 1">
+          <label>Orden</label>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="redSocialSeleccionada.orden"
+            placeholder="Orden"
+            min="1" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>URL <span class="required">*</span></label>
+        <input
+          type="url"
+          class="form-control"
+          [(ngModel)]="redSocialSeleccionada.url"
+          placeholder="https://facebook.com/tu-pagina" />
+      </div>
+
+      <div class="form-group">
+        <label>Selecciona un icono <span class="required">*</span></label>
+        <div class="iconos-grid">
+          <div
+            class="icono-option"
+            *ngFor="let icon of iconosRedesDisponibles"
+            (click)="seleccionarIconoRedSocial(icon)"
+            [class.seleccionado]="redSocialSeleccionada.icono === icon">
+            <i class="bi {{ icon }}"></i>
+            <span class="icono-nombre">{{ icon.replace("bi-", "") }}</span>
+          </div>
+        </div>
+        <small class="text-muted" style="display: block; margin-top: 8px">
+          Haz clic en un icono para seleccionarlo. Actual:
+          <strong *ngIf="redSocialSeleccionada.icono">
+            <i class="bi {{ redSocialSeleccionada.icono }}"></i>
+            {{ redSocialSeleccionada.icono }}
+          </strong>
+          <span *ngIf="!redSocialSeleccionada.icono" style="color: #999"
+            >Ninguno seleccionado</span
+          >
+        </small>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 16px">
+        <label
+          style="
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 14px;
+          "
+          >Estado</label
+        >
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+          ">
+          <div class="toggle-switch" style="flex-shrink: 0">
+            <label
+              style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                cursor: pointer;
+                margin: 0;
+              ">
+              <input
+                type="checkbox"
+                [(ngModel)]="redSocialSeleccionada.activo" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px">
+            <span
+              class="estado-badge"
+              [class.activo]="redSocialSeleccionada.activo"
+              [class.inactivo]="!redSocialSeleccionada.activo">
+              <span class="estado-icon">{{
+                redSocialSeleccionada.activo ? "✅" : "❌"
+              }}</span>
+              <span class="estado-texto">{{
+                redSocialSeleccionada.activo ? "Activo" : "Inactivo"
+              }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="cerrarModalRedSocial()">
+        Cancelar
+      </button>
+      <button
+        class="btn-primary"
+        (click)="guardarRedSocial()"
+        [disabled]="guardando || !redSocialSeleccionada">
+        {{ guardando ? "⏳ Guardando..." : "💾 Guardar" }}
+      </button>
+    </div>
+  </div>
+</div>

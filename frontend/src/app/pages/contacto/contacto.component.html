@@ -1,0 +1,78 @@
+<section class="contacto-page">
+    <div class="container">
+        <div class="section-title">
+            <h2>Contacto</h2>
+            <p>Estamos aquí para ayudarte</p>
+        </div>
+
+        <div class="contact-content">
+            <div class="contact-info">
+                <h3>Información de contacto</h3>
+                
+                <div class="info-item">
+                    <i class="bi bi-geo-alt"></i>
+                    <div>
+                        <strong>Dirección:</strong>
+                        <p>Camino del Molino, 12</p>
+                        <p>Campo de Criptana, 13610</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="bi bi-telephone"></i>
+                    <div>
+                        <strong>Teléfono:</strong>
+                        <p>+34 123 456 789</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="bi bi-envelope"></i>
+                    <div>
+                        <strong>Email:</strong>
+                        <p>info&#64;hotelamanecer.com</p>
+                    </div>
+                </div>
+
+                <div class="map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3049.768116951698!2d-3.123456!3d39.123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDA3JzI0LjQiTiAzwrAwNycyNC40Ilc!5e0!3m2!1ses!2ses!4v1234567890"
+                        width="100%" 
+                        height="300" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+
+            <div class="contact-form-container">
+                <h3>Envíanos un mensaje</h3>
+                <form (ngSubmit)="onSubmit()" class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Nombre *</label>
+                        <input type="text" id="name" [(ngModel)]="contact.name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" [(ngModel)]="contact.email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Asunto *</label>
+                        <input type="text" id="subject" [(ngModel)]="contact.subject" name="subject" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Mensaje *</label>
+                        <textarea id="message" [(ngModel)]="contact.message" name="message" rows="5" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Enviar mensaje</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+

@@ -1,0 +1,65 @@
+<!-- frontend/src/app/components/header/header.component.html -->
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <a routerLink="/" class="logo">
+        <i class="bi bi-house-heart"></i>
+        <span>Hotel Amanecer</span>
+      </a>
+
+      <button class="menu-toggle" (click)="toggleMenu()">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <nav [class.active]="menuOpen" class="main-nav">
+        <a routerLink="/" routerLinkActive="active" (click)="menuOpen = false">
+          Inicio
+        </a>
+        <a
+          routerLink="/habitaciones"
+          routerLinkActive="active"
+          (click)="menuOpen = false">
+          Habitaciones
+        </a>
+        <a
+          routerLink="/servicios"
+          routerLinkActive="active"
+          (click)="menuOpen = false">
+          Servicios
+        </a>
+        <a
+          routerLink="/contacto"
+          routerLinkActive="active"
+          (click)="menuOpen = false">
+          Contacto
+        </a>
+
+        <!-- ✅ Botón Admin con sesión -->
+        <a
+          *ngIf="!(isLoggedIn$ | async)"
+          routerLink="/admin/login"
+          routerLinkActive="active"
+          (click)="menuOpen = false">
+          <i class="bi bi-shield-lock"></i> Admin
+        </a>
+
+        <!-- ✅ Panel Admin cuando está logueado -->
+        <a
+          *ngIf="isLoggedIn$ | async"
+          routerLink="/admin/dashboard"
+          routerLinkActive="active"
+          (click)="menuOpen = false">
+          <i class="bi bi-speedometer2"></i> Panel Admin
+        </a>
+
+        <!-- ✅ Cerrar sesión -->
+        <a
+          *ngIf="isLoggedIn$ | async"
+          (click)="logout(); menuOpen = false"
+          style="cursor: pointer">
+          <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>

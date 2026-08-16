@@ -1,0 +1,263 @@
+// frontend/src/app/pages/resumen-reserva/resumen-reserva.component.scss
+
+.resumen-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.resumen-card {
+  background: white;
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+  h2 {
+    color: #8b7355;
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 28px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 16px;
+  }
+}
+
+// ============================================
+// MENSAJES DE ERROR Y ÉXITO
+// ============================================
+.mensaje-error {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+
+  i {
+    font-size: 20px;
+  }
+}
+
+.mensaje-exito {
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  text-align: center;
+
+  i {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+
+  .redirigiendo {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 5px;
+  }
+}
+
+// ============================================
+// SECCIONES
+// ============================================
+.habitacion-info {
+  background: #f9f6f2;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+
+  h3 {
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  p {
+    color: #666;
+    margin-bottom: 15px;
+  }
+
+  .detalles {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    span {
+      font-size: 14px;
+      color: #555;
+    }
+  }
+}
+
+.info-section {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+
+  h4 {
+    color: #555;
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 20px;
+
+  span {
+    font-size: 14px;
+    color: #444;
+  }
+}
+
+// ============================================
+// TOTAL
+// ============================================
+.total-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  margin: 20px 0;
+  border-top: 2px solid #eee;
+  border-bottom: 2px solid #eee;
+
+  .total-label {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .total-price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #8b7355;
+  }
+}
+
+// ============================================
+// BOTONES
+// ============================================
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+
+  button {
+    flex: 1;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.btn-primary {
+  background: #8b7355;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: #6d5a42;
+  }
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: #5a6268;
+  }
+}
+
+// ============================================
+// LOADING
+// ============================================
+.loading-container {
+  text-align: center;
+  padding: 60px 20px;
+
+  .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #8b7355;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+  }
+
+  p {
+    color: #666;
+    font-size: 16px;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================
+// RESPONSIVE
+// ============================================
+@media (max-width: 768px) {
+  .resumen-container {
+    padding: 10px;
+  }
+
+  .resumen-card {
+    padding: 20px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .button-group {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .detalles {
+    flex-direction: column;
+    gap: 5px !important;
+  }
+
+  .total-section {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+}

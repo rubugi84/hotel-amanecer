@@ -1,0 +1,459 @@
+<!-- frontend/src/app/pages/prechecking/prechecking.component.html -->
+<div class="prechecking-container">
+  <!-- Estado: Cargando -->
+  <div *ngIf="cargando" class="loading-container">
+    <div class="spinner"></div>
+    <p>Verificando su reserva...</p>
+  </div>
+
+  <!-- Estado: Error -->
+  <div *ngIf="error" class="error-card">
+    <h3>❌ Enlace inválido</h3>
+    <p>El enlace de pre-checking no es válido o ya ha sido utilizado.</p>
+    <button class="btn-secondary" (click)="volver()">Volver al inicio</button>
+  </div>
+
+  <!-- Estado: Realizado con éxito -->
+  <div *ngIf="realizado" class="success-container">
+    <div class="success-card">
+      <div class="success-icon">✅</div>
+      <h2>¡Pre-checking realizado con éxito!</h2>
+      <p>Su llegada al hotel será más rápida y cómoda.</p>
+      <p class="success-subtext">
+        Los datos han sido registrados según la normativa SES.HOSPEDAJES.
+      </p>
+
+      <!-- ✅ BARRA DE PROGRESO DE REDIRECCIÓN -->
+      <div *ngIf="mostrarBarraProgreso" class="progress-container">
+        <div class="progress-text">
+          <span>Redirigiendo al inicio en</span>
+          <span class="progress-seconds"
+            >{{ Math.ceil((progresoRedireccion / 100) * 5) }}s</span
+          >
+        </div>
+        <div class="progress-bar-wrapper">
+          <div
+            class="progress-bar"
+            [style.width.%]="progresoRedireccion"
+            [style.background]="
+              progresoRedireccion > 30 ? '#28a745' : '#dc3545'
+            "></div>
+        </div>
+        <p class="progress-help">
+          <i class="bi bi-info-circle"></i>
+          Serás redirigido automáticamente al inicio
+        </p>
+      </div>
+
+      <button class="btn-primary" (click)="volver()">
+        Volver al inicio ahora
+      </button>
+    </div>
+  </div>
+
+  <!-- Estado: Formulario -->
+  <div
+    *ngIf="reservaValida && !realizado && !cargando"
+    class="prechecking-card">
+    <h2>🚀 Pre-checking Online</h2>
+    <p class="subtitle">Complete sus datos para agilizar su llegada</p>
+
+    <!-- Información de la reserva -->
+    <div class="reserva-info" *ngIf="reserva">
+      <div class="info-grid">
+        <div>
+          <span class="label">Entrada:</span> {{ reserva.fecha_entrada }}
+        </div>
+        <div><span class="label">Salida:</span> {{ reserva.fecha_salida }}</div>
+        <div>
+          <span class="label">Habitación:</span> {{ reserva.habitacion_id }}
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ MENSAJES DE ERROR/ÉXITO -->
+    <div *ngIf="mostrarError" class="mensaje-error">
+      <i class="bi bi-exclamation-circle"></i>
+      {{ mensajeError }}
+    </div>
+
+    <div *ngIf="mostrarExito" class="mensaje-exito">
+      <i class="bi bi-check-circle"></i>
+      {{ mensajeExito }}
+    </div>
+
+    <!-- Banner informativo -->
+    <div class="info-banner">
+      <p>
+        ℹ️ Los datos marcados con <span class="required">*</span> son
+        obligatorios según la normativa SES.HOSPEDAJES.
+      </p>
+    </div>
+
+    <form (ngSubmit)="realizarPrechecking()" #precheckingForm="ngForm">
+      <!-- SECCIÓN 1: DOCUMENTO DE IDENTIDAD -->
+      <div class="form-section highlight-section">
+        <h3>
+          🆔 Documento de Identidad <span class="step-badge">PASO 1</span>
+        </h3>
+        <p class="section-help">
+          Sube una foto del anverso y reverso de tu DNI/NIE/Pasaporte
+        </p>
+
+        <div class="dni-upload-row">
+          <div class="dni-upload-group primary">
+            <label
+              >Anverso del DNI/NIF/NIE/PASAPORTE
+              <span class="required">*</span></label
+            >
+            <div class="file-upload-wrapper">
+              <input
+                type="file"
+                accept="image/*"
+                (change)="onDniFrontalSelected($event)"
+                class="file-input"
+                id="dniFrontal"
+                required />
+              <label
+                for="dniFrontal"
+                class="file-label"
+                [class.has-file]="previewFrontal">
+                <span *ngIf="!previewFrontal">📁 Seleccionar archivo</span>
+                <span *ngIf="previewFrontal && !leyendoDni"
+                  >✅ Archivo seleccionado</span
+                >
+                <span *ngIf="leyendoDni">⏳ Leyendo datos...</span>
+              </label>
+            </div>
+            <div *ngIf="previewFrontal" class="preview-container">
+              <img
+                [src]="previewFrontal"
+                alt="Anverso DNI"
+                class="dni-preview" />
+            </div>
+          </div>
+
+          <div class="dni-upload-group">
+            <label>Reverso del DNI/NIF/NIE/PASAPORTE</label>
+            <div class="file-upload-wrapper">
+              <input
+                type="file"
+                accept="image/*"
+                (change)="onDniTraseroSelected($event)"
+                class="file-input"
+                id="dniTrasero" />
+              <label
+                for="dniTrasero"
+                class="file-label"
+                [class.has-file]="previewTrasero">
+                <span *ngIf="!previewTrasero">📁 Seleccionar archivo</span>
+                <span *ngIf="previewTrasero && !leyendoDni"
+                  >✅ Archivo seleccionado</span
+                >
+                <span *ngIf="leyendoDni">⏳ Leyendo datos...</span>
+              </label>
+            </div>
+            <div *ngIf="previewTrasero" class="preview-container">
+              <img
+                [src]="previewTrasero"
+                alt="Reverso DNI"
+                class="dni-preview" />
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="leyendoDni" class="ocr-loading">
+          <span class="spinner-small"></span> Leyendo datos del DNI...
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: DATOS PERSONALES -->
+      <div class="form-section">
+        <h3>📋 Datos Personales <span class="step-badge">PASO 2</span></h3>
+        <p class="section-help" *ngIf="!ocrCompletado">
+          ⚠️ Sube primero el anverso del DNI para completar estos campos
+          automáticamente
+        </p>
+        <p class="section-help success" *ngIf="ocrCompletado">
+          ✅ Completado automáticamente desde el DNI. Puedes modificar los datos
+          si es necesario.
+        </p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre <span class="required">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="datos.nombre"
+              name="nombre"
+              required
+              [placeholder]="
+                ocrCompletado
+                  ? 'Completado automáticamente'
+                  : 'Se leerá del DNI'
+              "
+              [class.ocr-filled]="ocrCompletado && datos.nombre" />
+          </div>
+          <div class="form-group">
+            <label>Apellidos <span class="required">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="datos.apellidos"
+              name="apellidos"
+              required
+              [placeholder]="
+                ocrCompletado
+                  ? 'Completado automáticamente'
+                  : 'Se leerá del DNI'
+              "
+              [class.ocr-filled]="ocrCompletado && datos.apellidos" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo de documento <span class="required">*</span></label>
+            <select
+              class="form-control"
+              [(ngModel)]="datos.tipoDocumento"
+              name="tipoDocumento"
+              required>
+              <option *ngFor="let tipo of tiposDocumento" [value]="tipo">
+                {{ tipo }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Número de documento <span class="required">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="datos.numeroDocumento"
+              name="numeroDocumento"
+              required
+              [placeholder]="
+                ocrCompletado
+                  ? 'Completado automáticamente'
+                  : 'Se leerá del DNI'
+              "
+              [class.ocr-filled]="ocrCompletado && datos.numeroDocumento" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha de expedición <span class="required">*</span></label>
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="datos.fechaExpedicion"
+              name="fechaExpedicion"
+              required
+              [class.ocr-filled]="ocrCompletado && datos.fechaExpedicion" />
+          </div>
+          <div class="form-group">
+            <label>Nacionalidad <span class="required">*</span></label>
+            <select
+              class="form-control"
+              [(ngModel)]="datos.nacionalidad"
+              name="nacionalidad"
+              required
+              [class.ocr-filled]="ocrCompletado && datos.nacionalidad">
+              <option value="">Seleccionar...</option>
+              <option *ngFor="let nacion of nacionalidades" [value]="nacion">
+                {{ nacion }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha de nacimiento <span class="required">*</span></label>
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="datos.fechaNacimiento"
+              name="fechaNacimiento"
+              required
+              [class.ocr-filled]="ocrCompletado && datos.fechaNacimiento" />
+          </div>
+          <div class="form-group">
+            <label>Residencia habitual <span class="required">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="datos.residenciaHabitual"
+              name="residenciaHabitual"
+              required
+              [placeholder]="
+                !datos.residenciaHabitual
+                  ? 'Sube el reverso del DNI para completar'
+                  : ''
+              "
+              [class.ocr-filled]="datos.residenciaHabitual" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Teléfono <span class="required">*</span></label>
+            <input
+              type="tel"
+              class="form-control"
+              [(ngModel)]="datos.telefono"
+              name="telefono"
+              required
+              placeholder="+34 123 456 789" />
+          </div>
+          <div class="form-group">
+            <label>Email <span class="required">*</span></label>
+            <input
+              type="email"
+              class="form-control"
+              [(ngModel)]="datos.email"
+              name="email"
+              required
+              placeholder="cliente@email.com" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: MENORES -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3>👶 Menores de edad</h3>
+          <button type="button" class="btn-toggle" (click)="toggleMenores()">
+            {{ mostrarMenores ? "Ocultar" : "Añadir menores" }}
+          </button>
+        </div>
+
+        <div *ngIf="mostrarMenores">
+          <div
+            *ngFor="let menor of datos.menores; let i = index"
+            class="menor-item">
+            <div class="menor-header">
+              <h4>Menor {{ i + 1 }}</h4>
+              <button
+                type="button"
+                class="btn-remove"
+                (click)="eliminarMenor(i)">
+                ✕
+              </button>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="menor.nombre"
+                  [name]="'menorNombre' + i"
+                  placeholder="Nombre" />
+              </div>
+              <div class="form-group">
+                <label>Apellidos</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="menor.apellidos"
+                  [name]="'menorApellidos' + i"
+                  placeholder="Apellidos" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Fecha de nacimiento</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  [(ngModel)]="menor.fechaNacimiento"
+                  [name]="'menorFecha' + i" />
+              </div>
+              <div class="form-group">
+                <label>Parentesco</label>
+                <select
+                  class="form-control"
+                  [(ngModel)]="menor.parentesco"
+                  [name]="'menorParentesco' + i">
+                  <option
+                    *ngFor="let parentesco of parentescos"
+                    [value]="parentesco">
+                    {{ parentesco }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn-add-menor" (click)="agregarMenor()">
+            ➕ Agregar otro menor
+          </button>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 4: DATOS ADICIONALES -->
+      <div class="form-section">
+        <h3>🚗 Datos adicionales</h3>
+
+        <div class="form-group">
+          <label>Matrícula del vehículo (opcional)</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="datos.vehiculoMatricula"
+            name="vehiculo"
+            placeholder="1234 ABC" />
+        </div>
+
+        <div class="form-group">
+          <label>Observaciones</label>
+          <textarea
+            class="form-control"
+            [(ngModel)]="datos.observaciones"
+            name="observaciones"
+            rows="3"
+            placeholder="Necesidades especiales, alergias, etc."></textarea>
+        </div>
+      </div>
+
+      <!-- ✅ CHECKBOX DE TÉRMINOS (INFORMATIVO) -->
+      <div class="form-actions">
+        <div class="terminos-checkbox">
+          <label class="checkbox-container">
+            <input
+              type="checkbox"
+              [(ngModel)]="aceptaTerminos"
+              name="aceptaTerminos" />
+            <span class="checkmark"></span>
+            <span class="checkbox-text">
+              <strong>Declaro</strong> que los datos introducidos son correctos
+              y verificables
+            </span>
+          </label>
+          <p class="checkbox-help">
+            <i class="bi bi-info-circle"></i>
+            La información proporcionada será utilizada para el registro
+            obligatorio en SES.HOSPEDAJES
+          </p>
+        </div>
+
+        <!-- Botón de envío -->
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="!ocrCompletado || precheckingForm.invalid || cargando">
+          {{ cargando ? "⏳ Procesando..." : "✅ Confirmar Pre-checking" }}
+        </button>
+
+        <p *ngIf="!ocrCompletado" class="help-text">
+          ⚠️ Debes subir el anverso del DNI para poder confirmar el pre-checking
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+<section class="services-page">
+  <div class="container">
+    <div class="section-title">
+      <!-- 🔥 CORREGIDO: Usar operador de navegación segura -->
+      <h2>{{ serviciosData["servicios_title"] || "Nuestros Servicios" }}</h2>
+      <p>
+        {{
+          serviciosData["servicios_subtitle"] ||
+            "Todo lo que necesitas para una estancia perfecta"
+        }}
+      </p>
+    </div>
+    <div class="servicios-grid">
+      <div class="servicio-card" *ngFor="let servicio of servicios">
+        <!-- 🔥 CORREGIDO: Usar 'nombre' en lugar de 'titulo' -->
+        <i class="bi {{ servicio.icono || 'bi-star' }}"></i>
+        <h3>{{ servicio.titulo }}</h3>
+        <p>{{ servicio.descripcion }}</p>
+      </div>
+    </div>
+  </div>
+</section>

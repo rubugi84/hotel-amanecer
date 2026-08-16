@@ -1,0 +1,186 @@
+<section class="rooms-page">
+  <div class="container">
+    <div class="section-title">
+      <h2>
+        {{ habitacionesData["habitaciones_title"] || "Nuestras Habitaciones" }}
+      </h2>
+      <p>
+        {{
+          habitacionesData["habitaciones_subtitle"] ||
+            "Descubre el confort y la tranquilidad en cada espacio"
+        }}
+      </p>
+    </div>
+
+    <!-- FILTRO SUPERIOR -->
+    <div class="booking-container">
+      <form class="booking-form" (ngSubmit)="consultarDisponibilidad()">
+        <div class="form-group date-group">
+          <label>Check in / Check out</label>
+          <div class="date-input-wrapper">
+            <input
+              type="text"
+              class="custom-date"
+              placeholder="Selecciona fechas"
+              ngxDaterangepickerMd
+              [(ngModel)]="selectedDateRange"
+              name="dates"
+              [autoApply]="true"
+              [showCustomRangeLabel]="false"
+              [linkedCalendars]="true"
+              [locale]="{
+                format: 'DD/MM/YYYY',
+                separator: ' - ',
+                applyLabel: 'Aplicar',
+                cancelLabel: 'Cancelar',
+                customRangeLabel: 'Personalizado',
+                weekLabel: 'Sem',
+                daysOfWeek: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                monthNames: [
+                  'Enero',
+                  'Febrero',
+                  'Marzo',
+                  'Abril',
+                  'Mayo',
+                  'Junio',
+                  'Julio',
+                  'Agosto',
+                  'Septiembre',
+                  'Octubre',
+                  'Noviembre',
+                  'Diciembre',
+                ],
+                firstDay: 1,
+              }" />
+            <i class="bi bi-calendar4"></i>
+          </div>
+        </div>
+
+        <div class="form-group counter-group">
+          <label>Adultos</label>
+          <div class="counter-wrapper">
+            <button
+              type="button"
+              class="counter-btn"
+              (click)="adultos = adultos - 1"
+              [disabled]="adultos <= 1">
+              -
+            </button>
+            <span class="counter-value">{{ adultos }}</span>
+            <button
+              type="button"
+              class="counter-btn"
+              (click)="adultos = adultos + 1">
+              +
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group counter-group">
+          <label>Niños</label>
+          <div class="counter-wrapper">
+            <button
+              type="button"
+              class="counter-btn"
+              (click)="ninos = ninos - 1"
+              [disabled]="ninos <= 0">
+              -
+            </button>
+            <span class="counter-value">{{ ninos }}</span>
+            <button
+              type="button"
+              class="counter-btn"
+              (click)="ninos = ninos + 1">
+              +
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="search-btn">
+          {{ consultaRealizada ? "Actualizar" : "Consultar" }}
+        </button>
+      </form>
+    </div>
+
+    <!-- ✅ CONTADOR DE RESULTADOS -->
+    <div
+      class="resultados-info"
+      *ngIf="consultaRealizada && habitaciones.length > 0">
+      <p>
+        <strong>{{ habitaciones.length }}</strong>
+        habitaciones disponibles para
+        <strong>{{ adultos + ninos }}</strong> personas ({{ adultos }} adultos,
+        {{ ninos }} niños)
+      </p>
+    </div>
+
+    <!-- LISTADO DE HABITACIONES -->
+    <div class="rooms-grid">
+      <div class="room-card" *ngFor="let room of habitaciones">
+        <div class="room-image">
+          <img [src]="getImagenUrl(room.imagen || '')" [alt]="room.nombre" />
+          <div *ngIf="consultaRealizada" class="badge-disponible">
+            ✅ Disponible
+          </div>
+        </div>
+        <div class="room-info">
+          <h3>{{ room.nombre }}</h3>
+          <p class="room-desc">{{ room.descripcion }}</p>
+
+          <!-- CAPACIDAD -->
+          <div class="room-capacity">
+            <span *ngIf="room.capacidad_adultos">
+              <i class="bi bi-person"></i> {{ room.capacidad_adultos }} adultos
+            </span>
+            <span *ngIf="room.capacidad_ninos">
+              <i class="bi bi-person"></i> {{ room.capacidad_ninos }} niños
+            </span>
+          </div>
+
+          <!-- CARACTERÍSTICAS -->
+          <div class="room-features">
+            <span *ngFor="let caracteristica of room.caracteristicas || []">
+              <i class="bi bi-check-circle"></i> {{ caracteristica }}
+            </span>
+            <span *ngIf="!room.caracteristicas.length">
+              <i class="bi bi-info-circle"></i> Sin características adicionales
+            </span>
+          </div>
+
+          <div class="room-footer">
+            <!-- PRECIO -->
+            <span class="room-price">
+              {{ room.precio | currency: "EUR" }} / noche
+            </span>
+
+            <!-- ✅ BOTÓN DINÁMICO -->
+            <button
+              *ngIf="!consultaRealizada"
+              class="btn-primary"
+              (click)="consultarDisponibilidad()">
+              Consultar Disponibilidad
+            </button>
+            <button
+              *ngIf="consultaRealizada"
+              class="btn-primary"
+              (click)="reservar(room)">
+              Reservar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ MENSAJE CUANDO NO HAY RESULTADOS -->
+    <div
+      *ngIf="consultaRealizada && habitaciones.length === 0"
+      class="no-results">
+      <i class="bi bi-emoji-frown"></i>
+      <h3>No hay habitaciones disponibles</h3>
+      <p>Para las fechas y huéspedes seleccionados no hay disponibilidad.</p>
+      <button class="btn-secondary" (click)="restaurarHabitaciones()">
+        Ver todas las habitaciones
+      </button>
+    </div>
+  </div>
+</section>

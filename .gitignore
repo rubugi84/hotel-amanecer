@@ -1,0 +1,34 @@
+# Dependencias de Node
+node_modules/
+
+# Archivos de construcción / dist
+/dist
+/build
+/out
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs y archivos de entorno
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.local
+.env.*.local
+
+# Archivos de tests
+coverage/
+
+# Angular específico
+.angular/

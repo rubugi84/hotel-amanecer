@@ -1,0 +1,265 @@
+// frontend/src/app/pages/ver-reserva/ver-reserva.component.scss
+.ver-reserva-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.reserva-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.header {
+  text-align: center;
+  border-bottom: 2px solid #f0ebe6;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+
+  h1 {
+    color: #8b7355;
+    margin: 0 0 10px 0;
+  }
+}
+
+.codigo-reserva {
+  background: #f9f6f2;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: inline-block;
+
+  .label {
+    color: #666;
+  }
+
+  .codigo {
+    font-weight: bold;
+    color: #8b7355;
+    font-size: 1.2rem;
+    margin-left: 10px;
+  }
+}
+
+.estado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+
+  &.pendiente {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+  }
+
+  &.confirmada {
+    background: #d4edda;
+    border-left: 4px solid #28a745;
+  }
+
+  &.cancelada {
+    background: #f8d7da;
+    border-left: 4px solid #dc3545;
+  }
+
+  .estado-badge {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+  }
+
+  .fecha-creacion {
+    color: #666;
+    font-size: 0.85rem;
+  }
+}
+
+h3 {
+  color: #8b7355;
+  margin: 20px 0 15px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0ebe6;
+}
+
+.habitacion-info {
+  p {
+    margin: 5px 0;
+    color: #333;
+  }
+}
+
+.caracteristicas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.caracteristica-tag {
+  background: #f0ebe6;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.fechas-grid,
+.huespedes-grid,
+.cliente-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  background: #f9f6f2;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.fecha-item,
+.huesped-item,
+.cliente-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.8rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  margin-top: 3px;
+}
+
+.precio-section {
+  text-align: center;
+  padding: 20px;
+  background: #f9f6f2;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.precio-total {
+  .total {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #8b7355;
+  }
+}
+
+.solicitudes-section {
+  background: #f9f6f2;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
+
+  p {
+    margin: 5px 0 0 0;
+    color: #555;
+  }
+}
+
+.acciones {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  justify-content: center;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: #8b7355;
+  color: white;
+
+  &:hover {
+    background: #6d5a42;
+  }
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+
+  &:hover {
+    background: #5a6268;
+  }
+}
+
+.error-card {
+  background: #f8d7da;
+  padding: 40px;
+  border-radius: 10px;
+  text-align: center;
+
+  h3 {
+    color: #721c24;
+    border-bottom: none;
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #8b7355;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 600px) {
+  .reserva-card {
+    padding: 15px;
+  }
+
+  .fechas-grid,
+  .huespedes-grid,
+  .cliente-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .acciones {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}

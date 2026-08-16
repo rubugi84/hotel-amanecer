@@ -1,0 +1,337 @@
+// frontend/src/app/admin/login/login.component.scss
+
+// ============================================
+// CONTENEDOR PRINCIPAL
+// ============================================
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f0eb 0%, #e8ddd4 100%);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+
+  // Decoración de fondo
+  &::before {
+    content: "🏨";
+    position: absolute;
+    font-size: 300px;
+    opacity: 0.04;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+}
+
+// ============================================
+// TARJETA DE LOGIN
+// ============================================
+.login-card {
+  background: white;
+  border-radius: 16px;
+  padding: 45px 40px 35px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.6s ease-out;
+
+  @media (max-width: 480px) {
+    padding: 30px 20px;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ============================================
+// HEADER DEL LOGIN
+// ============================================
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+
+  .login-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #8b7355, #6d5a42);
+    border-radius: 50%;
+    margin-bottom: 15px;
+    box-shadow: 0 8px 24px rgba(139, 115, 85, 0.3);
+
+    i {
+      font-size: 34px;
+      color: white;
+    }
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 6px 0;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: #888;
+    margin: 0;
+  }
+}
+
+// ============================================
+// MENSAJE DE ERROR
+// ============================================
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  border: 1px solid #f5c6cb;
+  animation: shake 0.4s ease-out;
+
+  i {
+    font-size: 20px;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  75% {
+    transform: translateX(8px);
+  }
+}
+
+// ============================================
+// FORMULARIO
+// ============================================
+.login-form {
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 6px;
+    }
+  }
+
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    i {
+      position: absolute;
+      left: 14px;
+      font-size: 18px;
+      color: #999;
+      pointer-events: none;
+      transition: color 0.3s;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 45px 12px 44px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: all 0.3s;
+      background: #fafafa;
+
+      &:focus {
+        outline: none;
+        border-color: #8b7355;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(139, 115, 85, 0.1);
+
+        ~ i {
+          color: #8b7355;
+        }
+      }
+
+      &.ng-invalid.ng-touched {
+        border-color: #dc3545;
+
+        ~ i {
+          color: #dc3545;
+        }
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #999;
+      cursor: pointer;
+      padding: 6px;
+      transition: color 0.3s;
+
+      &:hover {
+        color: #555;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// ============================================
+// BOTÓN DE LOGIN
+// ============================================
+.btn-login {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #8b7355, #6d5a42);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  i {
+    font-size: 18px;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(139, 115, 85, 0.35);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+// ============================================
+// FOOTER
+// ============================================
+.login-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+
+  .back-link {
+    color: #888;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    &:hover {
+      color: #8b7355;
+    }
+
+    i {
+      font-size: 16px;
+    }
+  }
+}
+
+// ============================================
+// BOTTOM
+// ============================================
+.login-bottom {
+  margin-top: 30px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+
+  p {
+    color: #999;
+    font-size: 13px;
+    margin: 0;
+  }
+}
+
+// ============================================
+// RESPONSIVE
+// ============================================
+@media (max-width: 480px) {
+  .login-card {
+    padding: 25px 16px;
+  }
+
+  .login-header {
+    h1 {
+      font-size: 20px;
+    }
+
+    .login-icon {
+      width: 60px;
+      height: 60px;
+
+      i {
+        font-size: 28px;
+      }
+    }
+  }
+
+  .login-form {
+    .input-wrapper {
+      input {
+        padding: 11px 40px 11px 40px;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .btn-login {
+    font-size: 15px;
+    padding: 12px;
+  }
+}

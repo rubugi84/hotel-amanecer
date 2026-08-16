@@ -1,0 +1,252 @@
+<!-- frontend/src/app/pages/detalle-reserva/detalle-reserva.component.html -->
+<div class="detalle-reserva-container" *ngIf="habitacion">
+  <div class="row">
+    <!-- Columna Izquierda - Imagen e info -->
+    <div class="col-izquierda">
+      <div class="habitacion-imagen">
+        <img
+          [src]="getImagenUrl(habitacion.imagen)"
+          [alt]="habitacion.nombre" />
+      </div>
+      <div class="habitacion-info">
+        <h1>{{ habitacion.nombre }}</h1>
+        <p>{{ habitacion.descripcion }}</p>
+        <div class="caracteristicas">
+          <span *ngFor="let caracteristica of habitacion.caracteristicas">
+            <i class="bi bi-check-circle"></i> {{ caracteristica }}
+          </span>
+        </div>
+        <div class="capacidad">
+          <span
+            ><i class="bi bi-person"></i>
+            {{ habitacion.capacidad_adultos }} adultos</span
+          >
+          <span
+            ><i class="bi bi-person"></i>
+            {{ habitacion.capacidad_ninos }} niños</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna Derecha - Formulario -->
+    <div class="col-derecha">
+      <div class="reserva-form-container">
+        <h3>Detalles de la reserva</h3>
+
+        <!-- ✅ MENSAJE DE ERROR/ÉXITO -->
+        <div
+          *ngIf="mostrarError"
+          class="mensaje-error"
+          [class.mensaje-exito]="!esError">
+          <i
+            [class]="
+              esError ? 'bi bi-exclamation-circle' : 'bi bi-check-circle'
+            "></i>
+          {{ mensajeError }}
+        </div>
+
+        <!-- Fechas -->
+        <div class="form-group">
+          <label>Fechas</label>
+          <div class="date-input-wrapper">
+            <input
+              type="text"
+              class="custom-date"
+              placeholder="Selecciona fechas"
+              ngxDaterangepickerMd
+              [(ngModel)]="selectedDateRange"
+              name="dates"
+              [autoApply]="true"
+              [showCustomRangeLabel]="false"
+              [linkedCalendars]="true"
+              [minDate]="today"
+              (change)="detectarCambios()"
+              [locale]="{
+                format: 'DD/MM/YYYY',
+                separator: ' - ',
+                applyLabel: 'Aplicar',
+                cancelLabel: 'Cancelar',
+                customRangeLabel: 'Personalizado',
+                weekLabel: 'Sem',
+                daysOfWeek: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+                monthNames: [
+                  'Enero',
+                  'Febrero',
+                  'Marzo',
+                  'Abril',
+                  'Mayo',
+                  'Junio',
+                  'Julio',
+                  'Agosto',
+                  'Septiembre',
+                  'Octubre',
+                  'Noviembre',
+                  'Diciembre',
+                ],
+                firstDay: 1,
+              }" />
+            <i class="bi bi-pencil"></i>
+          </div>
+        </div>
+
+        <!-- Huéspedes -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Adultos</label>
+            <div class="counter-wrapper">
+              <button
+                type="button"
+                class="counter-btn"
+                (click)="adultos = adultos - 1; detectarCambios()"
+                [disabled]="adultos <= 1">
+                -
+              </button>
+              <span class="counter-value">{{ adultos }}</span>
+              <button
+                type="button"
+                class="counter-btn"
+                (click)="adultos = adultos + 1; detectarCambios()">
+                +
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Niños</label>
+            <div class="counter-wrapper">
+              <button
+                type="button"
+                class="counter-btn"
+                (click)="ninos = ninos - 1; detectarCambios()"
+                [disabled]="ninos <= 0">
+                -
+              </button>
+              <span class="counter-value">{{ ninos }}</span>
+              <button
+                type="button"
+                class="counter-btn"
+                (click)="ninos = ninos + 1; detectarCambios()">
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desayuno -->
+        <div class="form-group">
+          <label>Desayuno</label>
+          <div class="select-wrapper">
+            <select [(ngModel)]="desayuno" (change)="detectarCambios()">
+              <option [value]="false">No incluir</option>
+              <option [value]="true">
+                Incluir desayuno (+10€/persona/noche)
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Datos del cliente -->
+        <div class="form-group">
+          <label>Nombre <span class="required">*</span></label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="nombre"
+            (input)="detectarCambios()"
+            placeholder="Ej: Juan" />
+        </div>
+        <div class="form-group">
+          <label>Apellidos <span class="required">*</span></label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="apellidos"
+            (input)="detectarCambios()"
+            placeholder="Ej: Pérez García" />
+        </div>
+        <div class="form-group">
+          <label>Dirección</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="direccion"
+            (input)="detectarCambios()"
+            placeholder="Ej: Calle Principal 123" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Teléfono <span class="required">*</span></label>
+            <input
+              type="tel"
+              class="form-control"
+              [(ngModel)]="telefono"
+              (input)="validarTelefono(); detectarCambios()"
+              [class.invalido]="!telefonoValido && telefono"
+              placeholder="+34 123 456 789" />
+            <small *ngIf="!telefonoValido && telefono" class="text-error">
+              ⚠️ Teléfono inválido (mínimo 9 dígitos, sin incluir el prefijo de
+              país)
+            </small>
+          </div>
+          <div class="form-group">
+            <label>DNI/NIE/Pasaporte <span class="required">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="dni"
+              (input)="validarDni(); detectarCambios()"
+              [class.invalido]="!dniValido && dni"
+              placeholder="12345678A" />
+            <small *ngIf="!dniValido && dni" class="text-error">
+              ⚠️ Formato: DNI (12345678A), NIE (X1234567A) o Pasaporte
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email <span class="required">*</span></label>
+          <input
+            type="email"
+            class="form-control"
+            [(ngModel)]="email"
+            (input)="validarEmail(); detectarCambios()"
+            [class.invalido]="!emailValido && email"
+            placeholder="cliente@email.com" />
+          <small *ngIf="!emailValido && email" class="text-error">
+            ⚠️ Email inválido
+          </small>
+        </div>
+
+        <!-- Importe total -->
+        <div class="total-price">
+          <span>Total:</span>
+          <span>{{ calcularImporte() | currency: "EUR" }}</span>
+        </div>
+        <div
+          *ngIf="mostrarError"
+          class="mensaje-error"
+          [class.mensaje-exito]="!esError">
+          <i
+            [class]="
+              esError ? 'bi bi-exclamation-circle' : 'bi bi-check-circle'
+            "></i>
+          {{ mensajeError }}
+        </div>
+        <!-- Botón dinámico -->
+        <button
+          class="btn-action"
+          (click)="accionBoton()"
+          [disabled]="!habitacion.activo">
+          {{ datosModificados ? "Consultar" : "Reservar" }}
+        </button>
+
+        <!-- Mensaje de no disponibilidad -->
+        <div *ngIf="!habitacion.activo" class="unavailable-message">
+          <i class="bi bi-exclamation-triangle"></i>
+          Esta habitación no está disponible actualmente
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
