@@ -12,18 +12,39 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ✅ Lista de orígenes permitidos
+const allowedOrigins = [
+  "http://localhost:4200",
+  "https://hotel-amanecer-frontend.onrender.com",
+  "https://hotel-amanecer-frontend.onrender.com/",
+];
+
 // Middleware
 app.use(
   helmet({
     crossOriginResourcePolicy: {policy: "same-site"},
   }),
 );
+
+// ✅ CORS CORREGIDO
 app.use(
   cors({
-    origin: "http://localhost:4200",
+    origin: function (origin, callback) {
+      // Permitir peticiones sin origen (como Postman o curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        console.log("❌ CORS bloqueado para origen:", origin);
+        callback(new Error("No permitido por CORS"));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   }),
 );
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -32,7 +53,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 // ============================================
 const isProduction = process.env.NODE_ENV === "production";
 
-// SOLO aplicar rate limiting en producción
 if (isProduction) {
   const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -44,9 +64,6 @@ if (isProduction) {
     legacyHeaders: false,
   });
   app.use("/api/", limiter);
-} else {
-  // ✅ EN DESARROLLO: NO aplicar rate limiting
-  // No aplicar ningún rate limiter en desarrollo
 }
 
 // Rutas API (Test)
