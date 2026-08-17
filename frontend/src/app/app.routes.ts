@@ -11,6 +11,7 @@ import {PrecheckingComponent} from "./pages/prechecking/prechecking.component";
 import {VerReservaComponent} from "./pages/ver-reserva/ver-reserva.component";
 import {AuthGuard} from "./guards/auth.guard";
 import {AdminDashboardComponent} from "./admin/admin-dashboard/admin-dashboard.component";
+import {ConfirmacionReservaComponent} from "./pages/confirmacion-reserva/confirmacion-reserva/confirmacion-reserva.component";
 
 export const routes: Routes = [
   // Rutas públicas
@@ -22,6 +23,7 @@ export const routes: Routes = [
   {path: "reservas/resumen", component: ResumenReservaComponent},
   {path: "contacto", component: ContactoComponent},
   {path: "prechecking/:token", component: PrecheckingComponent},
+  {path: "reservas/confirmacion", component: ConfirmacionReservaComponent},
 
   // ✅ Ruta pública para clientes (por hash)
   {path: "reservas/ver/:hash", component: VerReservaComponent},

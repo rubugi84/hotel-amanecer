@@ -74,7 +74,6 @@ const obtenerDatosHotel = async () => {
   }
 };
 
-// ✅ GENERAR QR CON EL HASH
 const generarQRUrlPublica = (hashSeguro) => {
   const url = `${process.env.FRONTEND_URL || "http://localhost:4200"}/reservas/ver/${hashSeguro}`;
   return `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(url)}&color=8B7355&bgcolor=FFFFFF&margin=10`;
@@ -759,8 +758,83 @@ const enviarEmailPrecheckingConfirmacion = async (
   }
 };
 
+const enviarEmailContactoCliente = async (datosContacto, hotel) => {
+  const {nombre, email, telefono, mensaje, formaContacto, horarioContacto} =
+    datosContacto;
+
+  const htmlCliente = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f0eb; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; border-bottom: 2px solid #8B7355; padding-bottom: 20px; }
+        .header h1 { color: #8B7355; margin: 0; }
+        .header .hotel-name { color: #8B7355; font-size: 20px; font-weight: bold; margin: 5px 0; }
+        .header .slogan { color: #999; font-style: italic; font-size: 14px; }
+        .success-banner { background: #d4edda; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; border: 2px solid #28a745; }
+        .success-banner .icon { font-size: 48px; display: block; margin-bottom: 10px; }
+        .success-banner h2 { color: #155724; margin: 0; }
+        .success-banner p { color: #155724; margin: 5px 0; }
+        .detail-block { background: #f9f6f2; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .detail-block h3 { color: #8B7355; margin-top: 0; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+        .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .detail-row:last-child { border-bottom: none; }
+        .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px; }
+        .mensaje-resumen { background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #8B7355; }
+        .certificaciones { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
+        .certificacion { background: #e8d5c4; padding: 3px 12px; border-radius: 12px; font-size: 11px; color: #6d5a42; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>📩 ¡Mensaje recibido!</h1>
+          <p class="hotel-name">${hotel.nombre || "Hotel"}</p>
+          <p class="slogan">"${hotel.slogan || "Un lugar donde la naturaleza y el confort se encuentran"}"</p>
+          <div class="certificaciones">
+            ${hotel.certificacion1 ? `<span class="certificacion">⭐ ${hotel.certificacion1}</span>` : ""}
+            ${hotel.certificacion2 ? `<span class="certificacion">⭐ ${hotel.certificacion2}</span>` : ""}
+          </div>
+        </div>
+
+        <div class="success-banner">
+          <span class="icon">✅</span>
+          <h2>¡Hemos recibido tu mensaje!</h2>
+          <p>Gracias por contactar con nosotros, ${nombre}.</p>
+          <p style="font-size: 14px;">Te responderemos a la mayor brevedad posible.</p>
+        </div>
+
+        <div class="detail-block">
+          <h3>📋 Resumen de tu mensaje</h3>
+          <div class="detail-row"><span>👤 Nombre</span><span><strong>${nombre}</strong></span></div>
+          <div class="detail-row"><span>📧 Email</span><span><strong>${email}</strong></span></div>
+          <div class="detail-row"><span>📞 Teléfono</span><span><strong>${telefono}</strong></span></div>
+        </div>
+
+        <div class="mensaje-resumen">
+          <p style="margin: 0; font-weight: bold; color: #8B7355;">📝 Tu mensaje:</p>
+          <p style="margin: 10px 0 0 0; white-space: pre-wrap; color: #555;">${mensaje}</p>
+        </div>
+
+        <div class="footer">
+          <p><strong>${hotel.nombre || "Hotel"}</strong> © ${new Date().getFullYear()}</p>
+          <p style="font-size: 11px; color: #999;">Este email es una confirmación de que hemos recibido tu mensaje.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return htmlCliente;
+};
+
 module.exports = {
   enviarEmailCliente,
   enviarEmailHotel,
   enviarEmailPrecheckingConfirmacion,
+  enviarEmailContactoCliente,
 };

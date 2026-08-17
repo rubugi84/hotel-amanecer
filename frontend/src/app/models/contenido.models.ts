@@ -530,3 +530,34 @@ export interface DateRange {
 export interface SeccionesData {
   [seccion: string]: ContenidoSeccion;
 }
+export interface ContenidoWeb {
+  id: number;
+  clave: string;
+  valor: string;
+  seccion: string;
+  fecha_actualizacion: Date;
+}
+
+export interface DatosContacto {
+  nombre: string;
+  email: string;
+  telefono: string;
+  mensaje: string;
+  formaContacto: "telefono" | "email" | "indistinto";
+  horarioContacto: "manana" | "tarde" | "noche" | "indistinto";
+}
+
+// Interface para los datos del footer
+export interface FooterData {
+  nombre: string;
+  direccion?: string; // Opcional
+  direccionCompleta?: string; // Opcional
+  telefono: string;
+  email: string;
+  emailContacto: string;
+  slogan: string;
+  checkIn?: string;
+  checkOut?: string;
+  certificacion1?: string;
+  certificacion2?: string;
+}

@@ -2,7 +2,7 @@
 
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {Observable, tap} from "rxjs";
+import {Observable, tap, map} from "rxjs";
 import {environment} from "../../environments/environment";
 import {
   ContenidoSeccion,
@@ -27,6 +27,8 @@ import {
   Reserva,
   ReservaFiltros,
   SeccionesData,
+  ContenidoWeb,
+  FooterData,
 } from "../models/contenido.models";
 
 @Injectable({
@@ -55,25 +57,85 @@ export class ContenidoService {
     );
   }
 
+  // ✅ Obtener todas las secciones con su contenido
+  getTodasSecciones(): Observable<SeccionesData> {
+    return this.http.get<SeccionesData>(`${this.apiUrl}/secciones`);
+  }
+
+  // ✅ Obtener lista de secciones
+  getSeccionesLista(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/secciones/lista`);
+  }
+
+  // ✅ Actualizar sección completa
+  actualizarSeccion(
+    seccion: string,
+    datos: ContenidoSeccion,
+  ): Observable<{success: boolean; message: string; data: ContenidoSeccion}> {
+    return this.http.put<{
+      success: boolean;
+      message: string;
+      data: ContenidoSeccion;
+    }>(`${this.apiUrl}/seccion/${seccion}`, datos);
+  }
+
+  // ✅ Obtener contenido por clave
+  getContenidoByClave(clave: string): Observable<ContenidoWeb> {
+    return this.http.get<ContenidoWeb>(`${this.apiUrl}/clave/${clave}`);
+  }
+
+  // ✅ Obtener múltiples claves
+  getContenidoMultiple(claves: string[]): Observable<ContenidoWeb[]> {
+    return this.http.post<ContenidoWeb[]>(`${this.apiUrl}/multiples`, {claves});
+  }
+
+  // ✅ Obtener datos del footer y transformarlos a FooterData
+  getFooterData(): Observable<FooterData> {
+    const claves = [
+      "footer_nombre",
+      "footer_direccion",
+      "footer_telefono",
+      "footer_email_normal",
+      "footer_slogan",
+    ];
+
+    return this.getContenidoMultiple(claves).pipe(
+      map((items: ContenidoWeb[]) => {
+        const datos: Record<string, string> = {};
+        items.forEach((item) => {
+          datos[item.clave] = item.valor;
+        });
+
+        return {
+          nombre: datos["footer_nombre"] || "Hotel Amanecer en Campos",
+          direccion: datos["footer_direccion"] || "Camino del Molino, 1",
+          telefono: datos["footer_telefono"] || "+34 123 456 789",
+          email: datos["footer_email_normal"] || "info@hotelamanecer.com",
+          emailContacto:
+            datos["footer_email_normal"] || "info@hotelamanecer.com",
+          slogan:
+            datos["footer_slogan"] ||
+            "Un lugar donde la naturaleza y el confort se encuentran",
+        };
+      }),
+    );
+  }
+
   // ============================================
   // PÁGINAS LEGALES
   // ============================================
-  // Admin: Obtener todas las páginas legales
   getPaginasLegalesAdmin(): Observable<PaginaLegal[]> {
     return this.http.get<PaginaLegal[]>(`${this.baseApiUrl}/legal`);
   }
 
-  // Público: Obtener página legal por clave
   getPaginaLegal(clave: string): Observable<PaginaLegal> {
     return this.http.get<PaginaLegal>(`${this.baseApiUrl}/legal/${clave}`);
   }
 
-  // Admin: Crear nueva página legal
   crearPaginaLegal(datos: PaginaLegalCreacion): Observable<PaginaLegal> {
     return this.http.post<PaginaLegal>(`${this.baseApiUrl}/legal`, datos);
   }
 
-  // Admin: Actualizar página legal
   actualizarPaginaLegal(
     datos: PaginaLegalActualizacion,
   ): Observable<PaginaLegal> {
@@ -83,7 +145,6 @@ export class ContenidoService {
     );
   }
 
-  // Admin: Eliminar página legal
   eliminarPaginaLegal(id: number): Observable<{message: string}> {
     return this.http.delete<{message: string}>(
       `${this.baseApiUrl}/legal/${id}`,
@@ -93,22 +154,18 @@ export class ContenidoService {
   // ============================================
   // REDES SOCIALES
   // ============================================
-  // Admin: Obtener todas las redes sociales
   getRedesSocialesAdmin(): Observable<RedSocial[]> {
     return this.http.get<RedSocial[]>(`${this.baseApiUrl}/redes`);
   }
 
-  // Público: Obtener solo redes activas
   getRedesSociales(): Observable<RedSocial[]> {
     return this.http.get<RedSocial[]>(`${this.baseApiUrl}/redes/activas`);
   }
 
-  // Admin: Crear nueva red social
   crearRedSocial(datos: RedSocialCreacion): Observable<RedSocial> {
     return this.http.post<RedSocial>(`${this.baseApiUrl}/redes`, datos);
   }
 
-  // Admin: Actualizar red social
   actualizarRedSocial(datos: RedSocialActualizacion): Observable<RedSocial> {
     return this.http.put<RedSocial>(
       `${this.baseApiUrl}/redes/${datos.id}`,
@@ -116,7 +173,6 @@ export class ContenidoService {
     );
   }
 
-  // Admin: Eliminar red social
   eliminarRedSocial(id: number): Observable<{message: string}> {
     return this.http.delete<{message: string}>(
       `${this.baseApiUrl}/redes/${id}`,
@@ -136,6 +192,15 @@ export class ContenidoService {
     return this.http.post<Habitacion[]>(
       `${this.baseApiUrl}/reservas/buscar`,
       datos,
+    );
+  }
+
+  getPrecioDesayuno(): Observable<number> {
+    return this.getContenidoByClave("habitaciones_desayuno").pipe(
+      map((item: ContenidoWeb) => {
+        const precio = parseFloat(item.valor);
+        return isNaN(precio) ? 10 : precio; // Si no se puede parsear, usar 10 como default
+      }),
     );
   }
 
@@ -174,6 +239,19 @@ export class ContenidoService {
   // ============================================
   getReservas(): Observable<Reserva[]> {
     return this.http.get<Reserva[]>(`${this.baseApiUrl}/reservas`);
+  }
+
+  getReservasSimple(): Observable<Reserva[]> {
+    return this.http.get<Reserva[]>(`${this.baseApiUrl}/reservas`).pipe(
+      tap({
+        next: (_data) => {
+          // Verificar tokens
+        },
+        error: (error) => {
+          console.error("❌ [SERVICE] Error:", error);
+        },
+      }),
+    );
   }
 
   getReservasConFiltros(filtros: ReservaFiltros): Observable<Reserva[]> {
@@ -217,6 +295,7 @@ export class ContenidoService {
       `${this.baseApiUrl}/reservas/${id}`,
     );
   }
+
   reenviarEmailConfirmacion(
     id: number,
   ): Observable<{message: string; email?: string; codigo?: string}> {
@@ -256,15 +335,32 @@ export class ContenidoService {
     );
   }
 
+  // ✅ Subir imagen del hero
+  subirImagenHero(
+    formData: FormData,
+  ): Observable<{success: boolean; message: string; ruta: string}> {
+    return this.http.post<{success: boolean; message: string; ruta: string}>(
+      `${this.baseApiUrl}/upload/hero`,
+      formData,
+    );
+  }
+
+  // ✅ Eliminar imagen del hero
+  eliminarImagenHero(
+    ruta: string,
+  ): Observable<{success: boolean; message: string}> {
+    return this.http.delete<{success: boolean; message: string}>(
+      `${this.baseApiUrl}/upload/hero?ruta=${encodeURIComponent(ruta)}`,
+    );
+  }
+
   // ============================================
   // SERVICIOS
   // ============================================
-  // Admin: Obtener todos los servicios
   getServiciosAdmin(): Observable<Servicio[]> {
     return this.http.get<Servicio[]>(`${this.baseApiUrl}/servicios/admin`);
   }
 
-  // Público: Obtener servicios activos
   getServicios(): Observable<Servicio[]> {
     return this.http.get<Servicio[]>(`${this.baseApiUrl}/servicios`);
   }
@@ -283,64 +379,6 @@ export class ContenidoService {
   eliminarServicio(id: number): Observable<{message: string}> {
     return this.http.delete<{message: string}>(
       `${this.baseApiUrl}/servicios/${id}`,
-    );
-  }
-
-  // frontend/src/app/services/contenido.service.ts
-
-  getReservasSimple(): Observable<Reserva[]> {
-    // ✅ Usar el endpoint GET /reservas (que ya existe y funciona)
-    const url = `${this.baseApiUrl}/reservas`;
-
-    return this.http.get<Reserva[]>(url).pipe(
-      tap({
-        next: (_data) => {
-          // Verificar tokens
-        },
-        error: (error) => {
-          console.error("❌ [SERVICE] Error:", error);
-        },
-      }),
-    );
-  }
-  // ✅ Obtener todas las secciones con su contenido
-  getTodasSecciones(): Observable<SeccionesData> {
-    return this.http.get<SeccionesData>(`${this.apiUrl}/secciones`);
-  }
-
-  // ✅ Obtener lista de secciones
-  getSeccionesLista(): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}/secciones/lista`);
-  }
-
-  // ✅ Actualizar sección completa
-  actualizarSeccion(
-    seccion: string,
-    datos: ContenidoSeccion,
-  ): Observable<{success: boolean; message: string; data: ContenidoSeccion}> {
-    return this.http.put<{
-      success: boolean;
-      message: string;
-      data: ContenidoSeccion;
-    }>(`${this.apiUrl}/seccion/${seccion}`, datos);
-  }
-
-  // ✅ Subir imagen del hero
-  subirImagenHero(
-    formData: FormData,
-  ): Observable<{success: boolean; message: string; ruta: string}> {
-    return this.http.post<{success: boolean; message: string; ruta: string}>(
-      `${this.baseApiUrl}/upload/hero`,
-      formData,
-    );
-  }
-
-  // ✅ Eliminar imagen del hero
-  eliminarImagenHero(
-    ruta: string,
-  ): Observable<{success: boolean; message: string}> {
-    return this.http.delete<{success: boolean; message: string}>(
-      `${this.baseApiUrl}/upload/hero?ruta=${encodeURIComponent(ruta)}`,
     );
   }
 }

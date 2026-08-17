@@ -18,6 +18,8 @@ import {DateOrNeverPipe} from "../../pipes/date-or-never.pipe";
 import dayjs from "dayjs";
 import {DatepickerModule} from "../../datepicker.module";
 import {UsuarioService} from "../../services/usuario.service";
+import {AdminService} from "../../services/admin.service";
+
 import {
   ContenidoSeccion,
   Habitacion,
@@ -37,12 +39,14 @@ import {
   PaginasLegalesData,
   Reserva,
 } from "../../models/contenido.models";
+import {Subscription} from "rxjs";
 
 import {
   HabitacionAdmin,
   RedSocialAdmin,
   PrecheckingAdmin,
   EstadisticasAdmin,
+  ReservaReciente,
   TinyMCEBlobInfo,
   AboutContentResponse,
 } from "../../models/administrador.models";
@@ -103,6 +107,11 @@ export class AdminDashboardComponent implements OnInit {
     configuracion: "⚙️ Configuración",
   };
 
+  reservasRecientes: ReservaReciente[] = [];
+  cargando: boolean = true;
+  error: string = "";
+  private subscriptions: Subscription[] = [];
+
   // ============================================
   // CONTENIDO - ABOUT
   // ============================================
@@ -113,10 +122,10 @@ export class AdminDashboardComponent implements OnInit {
   // ESTADÍSTICAS DEL DASHBOARD
   // ============================================
   estadisticas: EstadisticasAdmin = {
-    reservasHoy: 5,
-    reservasSemana: 23,
-    precheckingsPendientes: 12,
-    habitacionesDisponibles: 8,
+    reservasHoy: 0,
+    reservasSemana: 0,
+    precheckingsPendientes: 0,
+    habitacionesDisponibles: 0,
   };
 
   // ============================================
@@ -422,6 +431,7 @@ export class AdminDashboardComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
     private router: Router,
+    private adminService: AdminService,
   ) {}
 
   // ============================================
@@ -449,6 +459,11 @@ export class AdminDashboardComponent implements OnInit {
     this.cargarPaginasLegales();
     this.cargarReservas();
     this.cargarSeccionesConfig();
+    this.cargarEstadisticas();
+    this.cargarReservasRecientes();
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   // ============================================
@@ -2238,5 +2253,73 @@ export class AdminDashboardComponent implements OnInit {
   }
   trackByKey(index: number, item: any): string {
     return item.key; // Usa la clave (ej: 'hero_titulo') como identificador único
+  }
+  cargarEstadisticas() {
+    const sub = this.adminService.getEstadisticas().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.estadisticas = response.data;
+          console.log("✅ Estadísticas cargadas:", this.estadisticas);
+        }
+        this.cargando = false;
+      },
+      error: (error) => {
+        console.error("❌ Error al cargar estadísticas:", error);
+        this.error = "Error al cargar las estadísticas";
+        this.cargando = false;
+      },
+    });
+    this.subscriptions.push(sub);
+  }
+
+  cargarReservasRecientes() {
+    const sub = this.adminService.getReservasRecientes(10).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.reservasRecientes = response.data;
+          console.log(
+            "✅ Reservas recientes cargadas:",
+            this.reservasRecientes,
+          );
+        }
+      },
+      error: (error) => {
+        console.error("❌ Error al cargar reservas recientes:", error);
+      },
+    });
+    this.subscriptions.push(sub);
+  }
+
+  // Método para formatear fecha
+  formatearFecha(fecha: string): string {
+    if (!fecha) return "";
+    const date = new Date(fecha);
+    return date.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  }
+
+  // Método para obtener el estado en español
+  getEstadoTexto(estado: string): string {
+    const estados: Record<string, string> = {
+      pendiente: "Pendiente",
+      confirmada: "Confirmada",
+      cancelada: "Cancelada",
+      completada: "Completada",
+    };
+    return estados[estado] || estado;
+  }
+
+  // Método para obtener la clase del estado
+  getEstadoClase(estado: string): string {
+    const clases: Record<string, string> = {
+      pendiente: "estado-pendiente",
+      confirmada: "estado-confirmada",
+      cancelada: "estado-cancelada",
+      completada: "estado-completada",
+    };
+    return clases[estado] || "";
   }
 }

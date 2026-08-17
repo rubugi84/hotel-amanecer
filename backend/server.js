@@ -69,6 +69,8 @@ const habitacionesRoutes = require("./routes/habitaciones");
 const reservasRoutes = require("./routes/reservas");
 const precheckingRoutes = require("./routes/prechecking");
 const authRoutes = require("./routes/auth");
+const contactoRoutes = require("./routes/contacto");
+const adminRoutes = require("./routes/admin");
 
 app.use("/api/contenido", contenidoRoutes);
 app.use("/api/upload", uploadRoutes);
@@ -79,6 +81,8 @@ app.use("/api/habitaciones", habitacionesRoutes);
 app.use("/api/reservas", reservasRoutes);
 app.use("/api/prechecking", precheckingRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/contacto", contactoRoutes);
+app.use("/api/admin", adminRoutes);
 
 // ============================================
 // MANEJO DE ERRORES 404

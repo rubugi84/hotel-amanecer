@@ -1,109 +1,533 @@
 .contacto-page {
-    padding: 40px 0;
+  padding: 40px 0;
+  background: #f8f5f1;
+
+  .section-title {
+    text-align: center;
+    margin-bottom: 40px;
+
+    h2 {
+      color: #8b7355;
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-family: "Playfair Display", serif;
+    }
+
+    p {
+      color: #666;
+      font-size: 1.2rem;
+    }
+  }
 }
 
+// Mapa - Bloque superior
+.mapa-bloque {
+  margin-bottom: 40px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  height: 350px;
+
+  iframe {
+    height: 100%;
+    display: block;
+  }
+}
+
+// Contenido principal - Grid
 .contact-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 50px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
 }
 
+// Info del hotel (izquierda)
 .contact-info {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
+  background: white;
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 
-.contact-info h3 {
+  .info-header {
+    border-bottom: 2px solid #8b7355;
+    padding-bottom: 20px;
     margin-bottom: 25px;
-    color: #333;
-}
 
-.info-item {
+    h3 {
+      color: #333;
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+      font-family: "Playfair Display", serif;
+    }
+
+    .slogan {
+      color: #8b7355;
+      font-style: italic;
+      margin: 0;
+    }
+  }
+
+  .info-item {
     display: flex;
     gap: 15px;
-    margin-bottom: 20px;
-}
-
-.info-item i {
-    font-size: 1.5rem;
-    color: #8B7355;
-    margin-top: 3px;
-}
-
-.info-item strong {
-    display: block;
-    margin-bottom: 3px;
-    color: #333;
-}
-
-.info-item p {
-    color: #666;
-}
-
-.map-container {
-    margin-top: 20px;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.contact-form-container {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.contact-form-container h3 {
     margin-bottom: 25px;
+    padding: 15px;
+    background: #f9f6f2;
+    border-radius: 8px;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateX(5px);
+    }
+
+    i {
+      font-size: 1.5rem;
+      color: #8b7355;
+      margin-top: 2px;
+      min-width: 30px;
+    }
+
+    strong {
+      display: block;
+      color: #333;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    p {
+      color: #555;
+      margin: 3px 0 0 0;
+    }
+
+    .info-link {
+      color: #8b7355;
+      text-decoration: none;
+      font-weight: 500;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .info-adicional {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+
+    .info-horario {
+      display: flex;
+      gap: 15px;
+      padding: 15px;
+      background: #e8f4f8;
+      border-radius: 8px;
+
+      i {
+        font-size: 1.5rem;
+        color: #8b7355;
+        min-width: 30px;
+      }
+
+      strong {
+        display: block;
+        color: #333;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      p {
+        color: #555;
+        margin: 3px 0 0 0;
+      }
+    }
+  }
+}
+
+// Formulario (derecha)
+.contact-form-container {
+  background: white;
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+  h3 {
     color: #333;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    font-family: "Playfair Display", serif;
+    border-bottom: 2px solid #8b7355;
+    padding-bottom: 15px;
+  }
 }
 
-.contact-form .form-group {
-    margin-bottom: 20px;
-}
+// Mensaje de estado
+.mensaje-estado {
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideIn 0.3s ease-out;
 
-.contact-form label {
-    display: block;
-    margin-bottom: 5px;
+  &.exito {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+
+  &.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .mensaje-icono {
+    font-size: 1.5rem;
+  }
+
+  .mensaje-texto {
     font-weight: 500;
-    color: #333;
+  }
 }
 
-.contact-form input,
-.contact-form textarea {
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Formulario
+.contact-form {
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #333;
+      font-size: 0.95rem;
+
+      .required {
+        color: #dc3545;
+        margin-left: 3px;
+      }
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      background: #fafafa;
+
+      &:focus {
+        outline: none;
+        border-color: #8b7355;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
+      }
+
+      &.error-input {
+        border-color: #dc3545;
+        background: #fff5f5;
+      }
+
+      &::placeholder {
+        color: #aaa;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .contador-caracteres {
+      display: block;
+      text-align: right;
+      font-size: 0.8rem;
+      color: #999;
+      margin-top: 4px;
+    }
+  }
+
+  // Radio group
+  .radio-group {
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .radio-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: #f5f0eb;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 0.9rem;
+        font-weight: 500;
+
+        &:hover {
+          background: #e8d5c4;
+        }
+
+        input[type="radio"] {
+          width: auto;
+          margin: 0;
+          accent-color: #8b7355;
+          cursor: pointer;
+        }
+
+        .radio-label {
+          cursor: pointer;
+        }
+
+        &:has(input:checked) {
+          background: #8b7355;
+          color: white;
+
+          input[type="radio"] {
+            accent-color: white;
+          }
+        }
+      }
+    }
+  }
+
+  .btn-primary {
     width: 100%;
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-    outline: none;
-    border-color: #8B7355;
-}
-
-.contact-form textarea {
-    resize: vertical;
-}
-
-.contact-form .btn-primary {
-    width: 100%;
-    padding: 12px;
+    padding: 14px;
+    background: #8b7355;
+    color: white;
+    border: none;
+    border-radius: 8px;
     font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+
+    &:hover:not(:disabled) {
+      background: #6d5a42;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(139, 115, 85, 0.3);
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .spinner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      .spinning {
+        animation: spin 1s linear infinite;
+        display: inline-block;
+      }
+    }
+  }
+}
+
+// Spinner de carga
+.loading-spinner {
+  text-align: center;
+  padding: 40px 20px;
+
+  i {
+    font-size: 2.5rem;
+    color: #8b7355;
+  }
+
+  p {
+    margin-top: 10px;
+    color: #666;
+    font-size: 0.95rem;
+  }
+}
+
+// Enlace de mapa
+.map-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #8b7355;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  margin-top: 5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  transition: all 0.3s;
+  background: rgba(139, 115, 85, 0.08);
+
+  i {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    background: rgba(139, 115, 85, 0.15);
+    text-decoration: underline;
+  }
+}
+
+// Sección QR
+.qr-section {
+  background: #f9f6f2;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  text-align: center;
+  border: 1px solid #e8d5c4;
+
+  .qr-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+
+    i {
+      color: #8b7355;
+      margin-right: 8px;
+    }
+  }
+
+  .qr-container {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    .qr-code {
+      width: 180px;
+      height: 180px;
+      border-radius: 4px;
+    }
+  }
+
+  .qr-text {
+    margin-top: 12px;
+    font-size: 0.85rem;
+
+    .qr-map-link {
+      background: #8b7355;
+      color: white;
+      padding: 6px 20px;
+      border-radius: 20px;
+
+      &:hover {
+        background: #6d5a42;
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+// Horario detalle
+.horario-detalle {
+  font-size: 0.85rem;
+  color: #777;
+  margin-top: 2px !important;
+}
+
+// Animaciones
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+// Responsive
+@media (max-width: 992px) {
+  .contact-content {
+    gap: 30px;
+  }
+
+  .mapa-bloque {
+    height: 280px;
+  }
 }
 
 @media (max-width: 768px) {
-    .contact-content {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
+  .contact-content {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
 
-    .contact-form-container {
-        padding: 20px;
+  .contact-info,
+  .contact-form-container {
+    padding: 25px;
+  }
+
+  .mapa-bloque {
+    height: 220px;
+  }
+
+  .radio-options {
+    flex-direction: column;
+
+    .radio-option {
+      width: 100%;
     }
+  }
+
+  .section-title h2 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .contacto-page {
+    padding: 20px 0;
+  }
+
+  .contact-info,
+  .contact-form-container {
+    padding: 20px;
+  }
+
+  .info-item {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mapa-bloque {
+    height: 180px;
+  }
 }

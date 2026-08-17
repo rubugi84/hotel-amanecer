@@ -168,11 +168,9 @@
               <i class="bi bi-calendar-plus"></i>
               <span>Ver reservas</span>
             </button>
-            <button
-              class="action-card"
-              (click)="cambiarSeccion('precheckings')">
+            <button class="action-card" (click)="cambiarSeccion('servicios')">
               <i class="bi bi-check-circle"></i>
-              <span>Pre-checkings</span>
+              <span>Servicios</span>
             </button>
             <button
               class="action-card"
@@ -180,9 +178,11 @@
               <i class="bi bi-grid-3x3-gap"></i>
               <span>Gestionar habitaciones</span>
             </button>
-            <button class="action-card" (click)="cambiarSeccion('about')">
-              <i class="bi bi-pencil-square"></i>
-              <span>Editar contenido</span>
+            <button
+              class="action-card"
+              (click)="cambiarSeccion('configuracion')">
+              <i class="bi bi-gear"></i>
+              <span>Configuracion</span>
             </button>
           </div>
         </div>
@@ -706,36 +706,6 @@
                   border: 1px solid #ddd;
                   border-radius: 4px;
                 " />
-            </div>
-
-            <!-- Filtro estado -->
-            <div style="min-width: 150px">
-              <label
-                style="
-                  display: block;
-                  font-size: 12px;
-                  font-weight: 600;
-                  color: #666;
-                  margin-bottom: 4px;
-                "
-                >📌 Estado</label
-              >
-              <select
-                class="form-control"
-                [(ngModel)]="filtroEstado"
-                (change)="aplicarFiltros()"
-                style="
-                  width: 100%;
-                  padding: 8px 12px;
-                  border: 1px solid #ddd;
-                  border-radius: 4px;
-                ">
-                <option value="todos">Todos</option>
-                <option value="pendiente">Pendiente</option>
-                <option value="confirmada">Confirmada</option>
-                <option value="cancelada">Cancelada</option>
-                <option value="completada">Completada</option>
-              </select>
             </div>
 
             <!-- Filtro prechecking -->

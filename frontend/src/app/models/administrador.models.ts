@@ -93,3 +93,28 @@ export interface AboutContentResponse {
   about_btn_text?: string;
   imagen?: string;
 }
+export interface EstadisticasAdmin {
+  reservasHoy: number;
+  reservasSemana: number;
+  precheckingsPendientes: number;
+  habitacionesDisponibles: number;
+}
+
+export interface ReservaReciente {
+  id: number;
+  habitacion_id: number;
+  habitacion_nombre: string;
+  fecha_entrada: string;
+  fecha_salida: string;
+  nombre_cliente: string;
+  apellidos_cliente: string;
+  email_cliente: string;
+  telefono_cliente: string;
+  adultos: number;
+  ninos: number;
+  desayuno: boolean;
+  importe_total: number;
+  codigo_reserva: string;
+  estado: string;
+  fecha_creacion: string;
+}

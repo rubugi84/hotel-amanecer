@@ -132,17 +132,20 @@
           </div>
         </div>
 
-        <!-- Desayuno -->
+        <!-- ✅ DESAYUNO CON PRECIO DINÁMICO DESDE BD -->
         <div class="form-group">
           <label>Desayuno</label>
           <div class="select-wrapper">
             <select [(ngModel)]="desayuno" (change)="detectarCambios()">
               <option [value]="false">No incluir</option>
               <option [value]="true">
-                Incluir desayuno (+10€/persona/noche)
+                {{ getTextoDesayuno() }}
               </option>
             </select>
           </div>
+          <small class="precio-desayuno" *ngIf="precioDesayuno">
+            Precio del desayuno: {{ precioDesayuno }}€/persona/noche
+          </small>
         </div>
 
         <!-- Datos del cliente -->
@@ -185,8 +188,7 @@
               [class.invalido]="!telefonoValido && telefono"
               placeholder="+34 123 456 789" />
             <small *ngIf="!telefonoValido && telefono" class="text-error">
-              ⚠️ Teléfono inválido (mínimo 9 dígitos, sin incluir el prefijo de
-              país)
+              ⚠️ Teléfono inválido (mínimo 9 dígitos)
             </small>
           </div>
           <div class="form-group">
@@ -218,11 +220,35 @@
           </small>
         </div>
 
-        <!-- Importe total -->
+        <!-- ✅ IMPORTE TOTAL ACTUALIZADO -->
         <div class="total-price">
           <span>Total:</span>
           <span>{{ calcularImporte() | currency: "EUR" }}</span>
         </div>
+
+        <!-- Detalle del precio (opcional) -->
+        <div class="price-detail" *ngIf="calcularNoches() > 0">
+          <div class="price-item">
+            <span
+              >{{ habitacion.precio }}€ x {{ calcularNoches() }} noches</span
+            >
+            <span>{{ calcularPrecioBase() }}€</span>
+          </div>
+          <div class="price-item" *ngIf="desayuno">
+            <span
+              >Desayuno: {{ precioDesayuno }}€ x {{ adultos + ninos }} personas
+              x {{ calcularNoches() }} noches</span
+            >
+            <span>{{ calcularPrecioDesayuno() }}€</span>
+          </div>
+          <div class="price-total">
+            <span><strong>Total</strong></span>
+            <span
+              ><strong>{{ calcularImporte() | currency: "EUR" }}</strong></span
+            >
+          </div>
+        </div>
+
         <div
           *ngIf="mostrarError"
           class="mensaje-error"
@@ -233,6 +259,7 @@
             "></i>
           {{ mensajeError }}
         </div>
+
         <!-- Botón dinámico -->
         <button
           class="btn-action"

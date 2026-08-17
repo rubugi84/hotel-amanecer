@@ -1,0 +1,62 @@
+<p>confirmacion-reserva works!</p>
+<div class="confirmacion-container">
+  <div class="confirmacion-card">
+    <!-- Icono de éxito -->
+    <div class="icono-exito">
+      <i class="bi bi-check-circle-fill"></i>
+    </div>
+
+    <h1>¡Reserva Confirmada! 🎉</h1>
+    <p class="subtitulo">
+      Tu reserva se ha realizado con éxito. Hemos enviado un email con los
+      detalles a tu correo.
+    </p>
+
+    <!-- Datos de la reserva -->
+    <div class="datos-reserva">
+      <div class="dato-item">
+        <span class="dato-label">📋 Código de reserva</span>
+        <span class="dato-valor codigo">{{ codigoReserva }}</span>
+      </div>
+      <div class="dato-item">
+        <span class="dato-label">👤 Cliente</span>
+        <span class="dato-valor">{{ nombreCliente }}</span>
+      </div>
+      <div class="dato-item">
+        <span class="dato-label">💰 Importe total</span>
+        <span class="dato-valor importe">{{
+          importeTotal | currency: "EUR"
+        }}</span>
+      </div>
+    </div>
+
+    <!-- Mensaje adicional -->
+    <div class="mensaje-adicional">
+      <i class="bi bi-envelope"></i>
+      <p>Te hemos enviado un email con todos los detalles de tu reserva.</p>
+    </div>
+
+    <!-- Barra de progreso -->
+    <div class="barra-progreso-container">
+      <div class="barra-progreso">
+        <div
+          class="barra-progreso-llena"
+          [style.width.%]="progreso"
+          [class.completa]="progreso >= 100"></div>
+      </div>
+      <p class="texto-progreso">
+        Redirigiendo al inicio en {{ segundosRestantes }} segundos...
+      </p>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="botones-accion">
+      <button class="btn-secundario" (click)="verDetalleReserva()">
+        <i class="bi bi-eye"></i> Ver mi reserva
+      </button>
+      <button class="btn-primario" (click)="irAlInicio()">
+        <i class="bi bi-house"></i> Ir al inicio ahora
+      </button>
+    </div>
+  </div>
+</div>

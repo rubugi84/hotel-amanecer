@@ -37,9 +37,17 @@
     <div class="info-section">
       <h4>📅 Fechas</h4>
       <div class="info-grid">
-        <span><strong>Entrada:</strong> {{ datos.fechas.entrada }}</span>
-        <span><strong>Salida:</strong> {{ datos.fechas.salida }}</span>
-        <span><strong>Noches:</strong> {{ totalNoches }}</span>
+        <span
+          ><strong>Entrada:</strong>
+          {{ formatearFecha(datos.fechas.entrada) }}</span
+        >
+        <span
+          ><strong>Salida:</strong>
+          {{ formatearFecha(datos.fechas.salida) }}</span
+        >
+        <span class="destacado"
+          ><strong>Noches:</strong> {{ totalNoches || 1 }}</span
+        >
       </div>
     </div>
 
@@ -53,6 +61,9 @@
           ><strong>Desayuno:</strong>
           {{ datos.desayuno ? "✅ Incluido" : "❌ No incluido" }}</span
         >
+        <span *ngIf="datos.desayuno" class="precio-desayuno">
+          <strong>Precio desayuno:</strong> {{ precioDesayuno }}€/persona/noche
+        </span>
       </div>
     </div>
 
@@ -74,21 +85,62 @@
     </div>
 
     <!-- Solicitud especial -->
-    <div class="info-section" *ngIf="solicitudEspecial">
-      <h4>📝 Solicitud especial</h4>
-      <p>{{ solicitudEspecial }}</p>
+    <div class="info-section">
+      <h4>📝 Solicitud especial (opcional)</h4>
+      <textarea
+        class="form-control"
+        [(ngModel)]="solicitudEspecial"
+        placeholder="¿Alguna petición especial? (ej: habitación cerca del ascensor, cama supletoria...)"
+        rows="3"
+        [disabled]="procesando || mostrarExito">
+      </textarea>
     </div>
 
     <!-- Hora estimada de llegada -->
-    <div class="info-section" *ngIf="horaEstimadaLlegada">
-      <h4>🕐 Hora estimada de llegada</h4>
-      <p>{{ horaEstimadaLlegada }}</p>
+    <div class="info-section">
+      <h4>🕐 Hora estimada de llegada (opcional)</h4>
+      <input
+        type="time"
+        class="form-control"
+        [(ngModel)]="horaEstimadaLlegada"
+        [disabled]="procesando || mostrarExito"
+        step="900" />
+      <small class="hint"
+        >Indica aproximadamente a qué hora piensas llegar al hotel</small
+      >
     </div>
 
-    <!-- Total -->
+    <!-- Desglose de precios -->
+    <div class="price-detail">
+      <h4>💰 Desglose de precios</h4>
+      <div class="price-item">
+        <span
+          >{{ datos.habitacion.precio }}€ x {{ totalNoches || 1 }} noches</span
+        >
+        <span>{{ calcularPrecioBase() | currency: "EUR" }}</span>
+      </div>
+      <div class="price-item" *ngIf="datos.desayuno">
+        <span
+          >Desayuno: {{ precioDesayuno }}€ x
+          {{ (datos.huespedes.adultos || 0) + (datos.huespedes.ninos || 0) }}
+          personas x {{ totalNoches || 1 }} noches</span
+        >
+        <span>{{ calcularPrecioDesayunoTotal() | currency: "EUR" }}</span>
+      </div>
+      <div class="price-total">
+        <span><strong>Total</strong></span>
+        <span
+          ><strong>{{ calcularPrecioTotal() | currency: "EUR" }}</strong></span
+        >
+      </div>
+    </div>
+
+    <!-- Total (versión simple) -->
     <div class="total-section">
-      <span class="total-label">Total:</span>
-      <span class="total-price">{{ datos.importe | currency: "EUR" }}</span>
+      <span class="total-label">Total a pagar:</span>
+      <span class="total-price">{{
+        calcularPrecioTotal() | currency: "EUR"
+      }}</span>
     </div>
 
     <!-- Botones -->
@@ -96,7 +148,7 @@
       <button
         class="btn-secondary"
         (click)="volverAlDetalle()"
-        [disabled]="procesando">
+        [disabled]="procesando || mostrarExito">
         ← Volver
       </button>
       <button

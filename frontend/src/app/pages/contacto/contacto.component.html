@@ -1,78 +1,306 @@
 <section class="contacto-page">
-    <div class="container">
-        <div class="section-title">
-            <h2>Contacto</h2>
-            <p>Estamos aquí para ayudarte</p>
-        </div>
-
-        <div class="contact-content">
-            <div class="contact-info">
-                <h3>Información de contacto</h3>
-                
-                <div class="info-item">
-                    <i class="bi bi-geo-alt"></i>
-                    <div>
-                        <strong>Dirección:</strong>
-                        <p>Camino del Molino, 12</p>
-                        <p>Campo de Criptana, 13610</p>
-                    </div>
-                </div>
-
-                <div class="info-item">
-                    <i class="bi bi-telephone"></i>
-                    <div>
-                        <strong>Teléfono:</strong>
-                        <p>+34 123 456 789</p>
-                    </div>
-                </div>
-
-                <div class="info-item">
-                    <i class="bi bi-envelope"></i>
-                    <div>
-                        <strong>Email:</strong>
-                        <p>info&#64;hotelamanecer.com</p>
-                    </div>
-                </div>
-
-                <div class="map-container">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3049.768116951698!2d-3.123456!3d39.123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDA3JzI0LjQiTiAzwrAwNycyNC40Ilc!5e0!3m2!1ses!2ses!4v1234567890"
-                        width="100%" 
-                        height="300" 
-                        style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy">
-                    </iframe>
-                </div>
-            </div>
-
-            <div class="contact-form-container">
-                <h3>Envíanos un mensaje</h3>
-                <form (ngSubmit)="onSubmit()" class="contact-form">
-                    <div class="form-group">
-                        <label for="name">Nombre *</label>
-                        <input type="text" id="name" [(ngModel)]="contact.name" name="name" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Email *</label>
-                        <input type="email" id="email" [(ngModel)]="contact.email" name="email" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="subject">Asunto *</label>
-                        <input type="text" id="subject" [(ngModel)]="contact.subject" name="subject" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="message">Mensaje *</label>
-                        <textarea id="message" [(ngModel)]="contact.message" name="message" rows="5" required></textarea>
-                    </div>
-
-                    <button type="submit" class="btn-primary">Enviar mensaje</button>
-                </form>
-            </div>
-        </div>
+  <div class="container">
+    <div class="section-title">
+      <h2>Contacto</h2>
+      <p>Estamos aquí para ayudarte</p>
     </div>
-</section>
 
+    <!-- MAPA - Bloque superior horizontal -->
+    <div class="mapa-bloque">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3049.768116951698!2d-4.4478069!3d42.2689351!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd47cdacc9e9a091%3A0x4cf6a70a10a4931e!2sHotel%20Amanecer%20en%20Campos!5e0!3m2!1ses!2ses!4v1234567890"
+        width="100%"
+        height="350"
+        style="border: 0"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+
+    <!-- BLOQUE INFERIOR DOBLE -->
+    <div class="contact-content">
+      <!-- Columna izquierda: Datos del hotel -->
+      <div class="contact-info">
+        <!-- Spinner de carga -->
+        <div *ngIf="cargando" class="loading-spinner">
+          <i class="bi bi-arrow-repeat spinning"></i>
+          <p>Cargando información...</p>
+        </div>
+
+        <!-- Datos del hotel -->
+        <ng-container *ngIf="!cargando">
+          <div class="info-header">
+            <h3>{{ datosHotel.nombre }}</h3>
+            <p class="slogan">{{ datosHotel.slogan }}</p>
+          </div>
+
+          <div class="info-item">
+            <i class="bi bi-geo-alt"></i>
+            <div>
+              <strong>Dirección:</strong>
+              <p>{{ datosHotel.direccionCompleta }}</p>
+              <!-- ✅ Enlace "Cómo llegar" con coordenadas exactas -->
+              <a
+                [href]="getGoogleMapsDirUrl()"
+                target="_blank"
+                class="map-link">
+                <i class="bi bi-map"></i> Cómo llegar
+              </a>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <i class="bi bi-telephone"></i>
+            <div>
+              <strong>Teléfono:</strong>
+              <p>
+                <a [href]="'tel:' + getTelefonoLimpio()" class="info-link">
+                  {{ datosHotel.telefono }}
+                </a>
+              </p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <i class="bi bi-envelope"></i>
+            <div>
+              <strong>Email:</strong>
+              <p>
+                <a [href]="'mailto:' + datosHotel.email" class="info-link">
+                  {{ datosHotel.email }}
+                </a>
+              </p>
+            </div>
+          </div>
+
+          <!-- ✅ Código QR para Google Maps -->
+          <div class="qr-section">
+            <p class="qr-title">
+              <i class="bi bi-qr-code"></i> Escanea para llegar
+            </p>
+            <div class="qr-container">
+              <img
+                [src]="getQrDirUrl()"
+                alt="QR Code para llegar al hotel"
+                class="qr-code"
+                loading="lazy" />
+            </div>
+            <p class="qr-text">
+              <a
+                [href]="getGoogleMapsDirUrl()"
+                target="_blank"
+                class="map-link qr-map-link">
+                Abrir en Google Maps
+              </a>
+            </p>
+          </div>
+
+          <div class="info-adicional">
+            <div class="info-horario">
+              <i class="bi bi-clock"></i>
+              <div>
+                <strong>Horario de atención</strong>
+                <p>Lunes a Domingo: 9:00 - 21:00</p>
+                <p class="horario-detalle" *ngIf="datosHotel.checkIn">
+                  Check-in: {{ datosHotel.checkIn }} | Check-out:
+                  {{ datosHotel.checkOut }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Columna derecha: Formulario -->
+      <div class="contact-form-container">
+        <h3>Envíanos un mensaje</h3>
+
+        <!-- Mensaje de estado -->
+        <div
+          *ngIf="estadoEnvio !== 'idle'"
+          class="mensaje-estado"
+          [class.exito]="estadoEnvio === 'exito'"
+          [class.error]="estadoEnvio === 'error'">
+          <span class="mensaje-icono">
+            <i
+              [class]="
+                estadoEnvio === 'exito'
+                  ? 'bi bi-check-circle-fill'
+                  : estadoEnvio === 'error'
+                    ? 'bi bi-exclamation-circle-fill'
+                    : 'bi bi-hourglass-split'
+              "></i>
+          </span>
+          <span class="mensaje-texto">{{ mensajeEstado }}</span>
+        </div>
+
+        <form
+          (ngSubmit)="onSubmit()"
+          #contactForm="ngForm"
+          class="contact-form">
+          <!-- Nombre -->
+          <div class="form-group">
+            <label for="name">
+              Nombre completo
+              <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="name"
+              [(ngModel)]="contacto.nombre"
+              name="name"
+              required
+              placeholder="Tu nombre completo"
+              [class.error-input]="
+                estadoEnvio === 'error' && !contacto.nombre.trim()
+              " />
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label for="email">
+              Email
+              <span class="required">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              [(ngModel)]="contacto.email"
+              name="email"
+              required
+              placeholder="tu@email.com"
+              [class.error-input]="
+                estadoEnvio === 'error' &&
+                (!contacto.email.trim() || !validarEmail(contacto.email))
+              " />
+          </div>
+
+          <!-- Teléfono -->
+          <div class="form-group">
+            <label for="telefono">
+              Teléfono
+              <span class="required">*</span>
+            </label>
+            <input
+              type="tel"
+              id="telefono"
+              [(ngModel)]="contacto.telefono"
+              name="telefono"
+              required
+              placeholder="+34 123 456 789"
+              [class.error-input]="
+                estadoEnvio === 'error' && !contacto.telefono.trim()
+              " />
+          </div>
+
+          <!-- Mensaje -->
+          <div class="form-group">
+            <label for="mensaje">
+              Mensaje
+              <span class="required">*</span>
+            </label>
+            <textarea
+              id="mensaje"
+              [(ngModel)]="contacto.mensaje"
+              name="mensaje"
+              rows="4"
+              required
+              placeholder="¿En qué podemos ayudarte?"
+              [class.error-input]="
+                estadoEnvio === 'error' &&
+                (!contacto.mensaje.trim() || contacto.mensaje.length < 10)
+              ">
+            </textarea>
+            <span class="contador-caracteres"
+              >{{ contacto.mensaje.length }}/1000</span
+            >
+          </div>
+
+          <!-- Radio: Forma de contacto -->
+          <div class="form-group radio-group">
+            <label>Forma de contacto preferida</label>
+            <div class="radio-options">
+              <label class="radio-option">
+                <input
+                  type="radio"
+                  [(ngModel)]="contacto.formaContacto"
+                  name="formaContacto"
+                  value="telefono" />
+                <span class="radio-label">Teléfono</span>
+              </label>
+              <label class="radio-option">
+                <input
+                  type="radio"
+                  [(ngModel)]="contacto.formaContacto"
+                  name="formaContacto"
+                  value="email" />
+                <span class="radio-label">Email</span>
+              </label>
+              <label class="radio-option">
+                <input
+                  type="radio"
+                  [(ngModel)]="contacto.formaContacto"
+                  name="formaContacto"
+                  value="indistinto"
+                  checked />
+                <span class="radio-label">Indistinto</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Radio: Horario de contacto -->
+          <div class="form-group radio-group">
+            <label>Horario de contacto preferido</label>
+            <div class="radio-options">
+              <label class="radio-option">
+                <input
+                  type="radio"
+                  [(ngModel)]="contacto.horarioContacto"
+                  name="horarioContacto"
+                  value="manana" />
+                <span class="radio-label">Mañana (9-14h)</span>
+              </label>
+              <label class="radio-option">
+                <input
+                  type="radio"
+                  [(ngModel)]="contacto.horarioContacto"
+                  name="horarioContacto"
+                  value="tarde" />
+                <span class="radio-label">Tarde (14-18h)</span>
+              </label>
+              <label class="radio-option">
+                <input
+                  type="radio"
+                  [(ngModel)]="contacto.horarioContacto"
+                  name="horarioContacto"
+                  value="noche" />
+                <span class="radio-label">Noche (18-21h)</span>
+              </label>
+              <label class="radio-option">
+                <input
+                  type="radio"
+                  [(ngModel)]="contacto.horarioContacto"
+                  name="horarioContacto"
+                  value="indistinto"
+                  checked />
+                <span class="radio-label">Indistinto</span>
+              </label>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="btn-primary"
+            [disabled]="estadoEnvio === 'enviando'">
+            <span *ngIf="estadoEnvio !== 'enviando'">Enviar mensaje</span>
+            <span *ngIf="estadoEnvio === 'enviando'" class="spinner">
+              <i class="bi bi-arrow-repeat spinning"></i>
+              Enviando...
+            </span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

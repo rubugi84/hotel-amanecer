@@ -67,9 +67,34 @@ const actualizarSeccion = async (seccion, datos) => {
   }
 };
 
+// ✅ NUEVO: Obtener múltiples claves de cualquier sección
+const getContenidoMultiple = async (claves) => {
+  if (!claves || !Array.isArray(claves) || claves.length === 0) {
+    return [];
+  }
+
+  const result = await pool.query(
+    "SELECT * FROM contenido_web WHERE clave = ANY($1) ORDER BY id ASC",
+    [claves],
+  );
+
+  return result.rows;
+};
+
+// ✅ NUEVO: Obtener contenido por clave específica
+const getContenidoByClave = async (clave) => {
+  const result = await pool.query(
+    "SELECT * FROM contenido_web WHERE clave = $1",
+    [clave],
+  );
+  return result.rows[0] || null;
+};
+
 module.exports = {
   getContenidoBySeccion,
   getTodasSecciones,
   getSecciones,
   actualizarSeccion,
+  getContenidoMultiple,
+  getContenidoByClave,
 };

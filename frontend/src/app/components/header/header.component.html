@@ -34,15 +34,6 @@
           Contacto
         </a>
 
-        <!-- ✅ Botón Admin con sesión -->
-        <a
-          *ngIf="!(isLoggedIn$ | async)"
-          routerLink="/admin/login"
-          routerLinkActive="active"
-          (click)="menuOpen = false">
-          <i class="bi bi-shield-lock"></i> Admin
-        </a>
-
         <!-- ✅ Panel Admin cuando está logueado -->
         <a
           *ngIf="isLoggedIn$ | async"

@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, OnDestroy} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormsModule} from "@angular/forms";
@@ -8,7 +8,9 @@ import {ContenidoService} from "../../services/contenido.service";
 import {
   Habitacion,
   BusquedaDisponibilidad,
+  ContenidoWeb,
 } from "../../models/contenido.models";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: "app-detalle-reserva",
@@ -17,10 +19,16 @@ import {
   templateUrl: "./detalle-reserva.component.html",
   styleUrls: ["./detalle-reserva.component.scss"],
 })
-export class DetalleReservaComponent implements OnInit {
+export class DetalleReservaComponent implements OnInit, OnDestroy {
+  // ============================================
+  // 1. DATOS DE LA HABITACIÓN
+  // ============================================
   habitacion: Habitacion | null = null;
   slug: string = "";
 
+  // ============================================
+  // 2. FECHAS Y HUÉSPEDES
+  // ============================================
   selectedDateRange = {
     startDate: dayjs().add(1, "day").toDate(),
     endDate: dayjs().add(2, "day").toDate(),
@@ -28,8 +36,16 @@ export class DetalleReservaComponent implements OnInit {
   today = dayjs();
   adultos: number = 2;
   ninos: number = 0;
-  desayuno: boolean = false;
 
+  // ============================================
+  // 3. DESAYUNO (cargado desde BD)
+  // ============================================
+  desayuno: boolean = false;
+  precioDesayuno: number = 10; // Valor por defecto, se carga desde BD
+
+  // ============================================
+  // 4. DATOS DEL CLIENTE
+  // ============================================
   nombre: string = "";
   apellidos: string = "";
   direccion: string = "";
@@ -37,15 +53,25 @@ export class DetalleReservaComponent implements OnInit {
   dni: string = "";
   email: string = "";
 
+  // ============================================
+  // 5. ESTADO DEL FORMULARIO
+  // ============================================
   datosModificados: boolean = false;
-
   mensajeError: string = "";
   mostrarError: boolean = false;
   esError: boolean = false;
 
+  // ============================================
+  // 6. VALIDACIONES
+  // ============================================
   emailValido: boolean = true;
   telefonoValido: boolean = true;
   dniValido: boolean = true;
+
+  // ============================================
+  // 7. SUBSCRIPCIONES
+  // ============================================
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -53,15 +79,54 @@ export class DetalleReservaComponent implements OnInit {
     private contenidoService: ContenidoService,
   ) {}
 
+  // ============================================
+  // 8. CICLO DE VIDA
+  // ============================================
   ngOnInit(): void {
+    // Cargar precio del desayuno desde BD
+    this.cargarPrecioDesayuno();
+
+    // Cargar habitación por slug
     this.route.params.subscribe((params) => {
       this.slug = params["slug"];
       this.cargarHabitacionPorSlug(this.slug);
     });
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  // ============================================
+  // 9. CARGA DE DATOS DESDE BD
+  // ============================================
+
+  /**
+   * Carga el precio del desayuno desde la tabla contenido_web
+   * Clave: habitaciones_desayuno
+   */
+  cargarPrecioDesayuno(): void {
+    const sub = this.contenidoService
+      .getContenidoByClave("habitaciones_desayuno")
+      .subscribe({
+        next: (item: ContenidoWeb) => {
+          const precio = parseFloat(item.valor);
+          this.precioDesayuno = isNaN(precio) ? 10 : precio;
+          console.log("✅ Precio desayuno cargado:", this.precioDesayuno);
+        },
+        error: (error) => {
+          console.error("❌ Error al cargar precio del desayuno:", error);
+          this.precioDesayuno = 10; // Valor por defecto
+        },
+      });
+    this.subscriptions.push(sub);
+  }
+
+  /**
+   * Carga la habitación por slug (nombre convertido a URL amigable)
+   */
   cargarHabitacionPorSlug(slug: string): void {
-    this.contenidoService.getHabitaciones().subscribe({
+    const sub = this.contenidoService.getHabitaciones().subscribe({
       next: (data: Habitacion[]) => {
         const habitacionEncontrada = data.find((h: Habitacion) => {
           const hSlug = h.nombre
@@ -85,16 +150,20 @@ export class DetalleReservaComponent implements OnInit {
         this.router.navigate(["/habitaciones"]);
       },
     });
+    this.subscriptions.push(sub);
   }
 
-  detectarCambios(): void {
-    this.datosModificados = true;
-    this.mostrarError = false;
-    this.mensajeError = "";
-  }
+  // ============================================
+  // 10. CÁLCULO DE IMPORTES
+  // ============================================
 
+  /**
+   * Calcula el importe total de la reserva
+   * Usa el precio del desayuno cargado desde BD
+   */
   calcularImporte(): number {
     if (!this.habitacion) return 0;
+
     const start = dayjs(this.selectedDateRange.startDate);
     const end = dayjs(this.selectedDateRange.endDate);
     const noches = end.diff(start, "day");
@@ -102,13 +171,53 @@ export class DetalleReservaComponent implements OnInit {
     const precio = parseFloat(this.habitacion.precio) || 0;
     let total = precio * noches;
 
+    // Usar precio del desayuno desde BD
     if (this.desayuno) {
-      total += (this.adultos + this.ninos) * 10 * noches;
+      const totalPersonas = this.adultos + this.ninos;
+      total += this.precioDesayuno * totalPersonas * noches;
     }
+
     return total;
   }
 
-  // ✅ VALIDACIONES CORREGIDAS - Sin escape innecesario
+  /**
+   * Calcula el número de noches
+   */
+  calcularNoches(): number {
+    const start = dayjs(this.selectedDateRange.startDate);
+    const end = dayjs(this.selectedDateRange.endDate);
+    return end.diff(start, "day");
+  }
+
+  /**
+   * Calcula el precio base de la habitación (sin desayuno)
+   */
+  calcularPrecioBase(): number {
+    if (!this.habitacion) return 0;
+    const precio = parseFloat(this.habitacion.precio) || 0;
+    return precio * this.calcularNoches();
+  }
+
+  /**
+   * Calcula el precio del desayuno
+   */
+  calcularPrecioDesayuno(): number {
+    if (!this.desayuno) return 0;
+    const totalPersonas = this.adultos + this.ninos;
+    return this.precioDesayuno * totalPersonas * this.calcularNoches();
+  }
+
+  /**
+   * Devuelve el texto del desayuno con el precio dinámico
+   */
+  getTextoDesayuno(): string {
+    return `Incluir desayuno (+${this.precioDesayuno}€/persona/noche)`;
+  }
+
+  // ============================================
+  // 11. VALIDACIONES
+  // ============================================
+
   validarEmail(): void {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     this.emailValido = emailRegex.test(this.email) || this.email === "";
@@ -116,8 +225,7 @@ export class DetalleReservaComponent implements OnInit {
   }
 
   validarTelefono(): void {
-    // ✅ CORREGIDO: sin escape innecesario en paréntesis
-    const telefonoRegex = /^[+\d\s\-()]{12,15}$/;
+    const telefonoRegex = /^[+\d\s\-()]{9,15}$/;
     this.telefonoValido =
       telefonoRegex.test(this.telefono) || this.telefono === "";
     this.limpiarMensaje();
@@ -137,11 +245,35 @@ export class DetalleReservaComponent implements OnInit {
     }
   }
 
+  // ============================================
+  // 12. DETECCIÓN DE CAMBIOS
+  // ============================================
+
+  detectarCambios(): void {
+    this.datosModificados = true;
+    this.mostrarError = false;
+    this.mensajeError = "";
+  }
+
+  // ============================================
+  // 13. MENSAJES DE ERROR
+  // ============================================
+
   mostrarMensajeError(mensaje: string): void {
     this.mensajeError = mensaje;
     this.mostrarError = true;
     this.esError = true;
   }
+
+  mostrarMensajeExito(mensaje: string): void {
+    this.mensajeError = mensaje;
+    this.mostrarError = true;
+    this.esError = false;
+  }
+
+  // ============================================
+  // 14. ACCIONES DEL BOTÓN
+  // ============================================
 
   accionBoton(): void {
     if (this.datosModificados) {
@@ -150,6 +282,10 @@ export class DetalleReservaComponent implements OnInit {
       this.validarYAvanzarAResumen();
     }
   }
+
+  // ============================================
+  // 15. CONSULTA DE DISPONIBILIDAD
+  // ============================================
 
   consultarDisponibilidad(): void {
     if (!this.habitacion) return;
@@ -163,7 +299,7 @@ export class DetalleReservaComponent implements OnInit {
       fecha_salida: dayjs(this.selectedDateRange.endDate).format("YYYY-MM-DD"),
     };
 
-    this.contenidoService
+    const sub = this.contenidoService
       .buscarHabitacionesDisponibles(datosConsulta)
       .subscribe({
         next: (habitacionesDisponibles: Habitacion[]) => {
@@ -173,10 +309,9 @@ export class DetalleReservaComponent implements OnInit {
 
           if (estaDisponible) {
             this.datosModificados = false;
-            this.mostrarError = true;
-            this.esError = false;
-            this.mensajeError =
-              "✅ La habitación está disponible para las fechas seleccionadas. Ya puedes reservar.";
+            this.mostrarMensajeExito(
+              "✅ La habitación está disponible para las fechas seleccionadas. Ya puedes reservar.",
+            );
           } else {
             this.mostrarMotivoNoDisponible();
           }
@@ -188,6 +323,7 @@ export class DetalleReservaComponent implements OnInit {
           );
         },
       });
+    this.subscriptions.push(sub);
   }
 
   mostrarMotivoNoDisponible(): void {
@@ -211,6 +347,10 @@ export class DetalleReservaComponent implements OnInit {
     );
   }
 
+  // ============================================
+  // 16. VALIDACIÓN Y AVANCE A RESUMEN
+  // ============================================
+
   validarYAvanzarAResumen(): void {
     // Validar campos obligatorios
     if (
@@ -233,7 +373,7 @@ export class DetalleReservaComponent implements OnInit {
       return;
     }
 
-    // ✅ Validar teléfono - CORREGIDO
+    // Validar teléfono
     const telefonoRegex = /^[+\d\s\-()]{9,15}$/;
     if (!telefonoRegex.test(this.telefono)) {
       this.mostrarMensajeError(
@@ -265,6 +405,7 @@ export class DetalleReservaComponent implements OnInit {
       return;
     }
 
+    // Construir datos de la reserva
     const datosReserva = {
       habitacion: {
         id: this.habitacion.id,
@@ -281,16 +422,14 @@ export class DetalleReservaComponent implements OnInit {
       fechas: {
         entrada: dayjs(this.selectedDateRange.startDate).format("DD/MM/YYYY"),
         salida: dayjs(this.selectedDateRange.endDate).format("DD/MM/YYYY"),
-        noches: dayjs(this.selectedDateRange.endDate).diff(
-          dayjs(this.selectedDateRange.startDate),
-          "day",
-        ),
+        noches: this.calcularNoches(),
       },
       huespedes: {
         adultos: this.adultos,
         ninos: this.ninos,
       },
       desayuno: this.desayuno,
+      precioDesayuno: this.precioDesayuno, // ✅ Añadido para usar en el resumen
       cliente: {
         nombre: this.nombre.trim(),
         apellidos: this.apellidos.trim(),
@@ -304,7 +443,6 @@ export class DetalleReservaComponent implements OnInit {
 
     try {
       localStorage.setItem("datosReserva", JSON.stringify(datosReserva));
-
       this.router.navigate(["/reservas/resumen"]);
     } catch (error) {
       console.error("❌ Error al guardar datos de reserva:", error);
@@ -314,7 +452,19 @@ export class DetalleReservaComponent implements OnInit {
     }
   }
 
+  // ============================================
+  // 17. UTILIDADES
+  // ============================================
+
   getImagenUrl(ruta: string): string {
     return ruta ? "http://localhost:3000" + ruta : "";
+  }
+
+  fechaActual(): string {
+    return dayjs().format("YYYY-MM-DD");
+  }
+
+  volver(): void {
+    window.history.back();
   }
 }

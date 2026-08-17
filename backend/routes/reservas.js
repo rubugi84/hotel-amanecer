@@ -219,10 +219,6 @@ router.delete("/:id", async (req, res) => {
 // POST: Reenviar email de confirmación (ADMIN)
 router.post("/:id/reenviar-email", async (req, res) => {
   try {
-    console.log(
-      `📧 [BACKEND] Reenviando email para reserva ID: ${req.params.id}`,
-    );
-
     // 1. Obtener la reserva con todos sus datos
     const reservaResult = await pool.query(
       `SELECT r.*, h.nombre as habitacion_nombre, h.descripcion as habitacion_descripcion,
@@ -306,10 +302,6 @@ router.post("/:id/reenviar-email", async (req, res) => {
 
     await enviarEmailCliente(datosCompletos, emailHotel);
     await enviarEmailHotel(datosCompletos, emailHotel);
-
-    console.log(
-      `✅ [BACKEND] Email reenviado correctamente para reserva ${reserva.codigo_reserva}`,
-    );
 
     res.json({
       message: "Email reenviado correctamente",
