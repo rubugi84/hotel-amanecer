@@ -5,6 +5,7 @@ import {FormsModule} from "@angular/forms";
 import {DatepickerModule} from "../../datepicker.module";
 import dayjs from "dayjs";
 import {ContenidoService} from "../../services/contenido.service";
+import {environment} from "../../../environments/environment";
 import {
   Habitacion,
   BusquedaDisponibilidad,
@@ -428,7 +429,8 @@ export class DetalleReservaComponent implements OnInit, OnDestroy {
   // ============================================
 
   getImagenUrl(ruta: string): string {
-    return ruta ? "http://localhost:3000" + ruta : "";
+    const baseUrl = environment.apiUrl.replace("/api", "");
+    return ruta ? baseUrl + ruta : "";
   }
 
   fechaActual(): string {

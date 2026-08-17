@@ -2250,10 +2250,7 @@
                     class="image-preview"
                     *ngIf="seccionConfigData['hero_imagen']">
                     <img
-                      [src]="
-                        'http://localhost:3000' +
-                        seccionConfigData['hero_imagen']
-                      "
+                      [src]="getImagenUrl(seccionConfigData['hero_imagen'])"
                       alt="Imagen del hero" />
                     <button
                       class="btn-remove-image"
@@ -2476,7 +2473,7 @@
               border: 1px solid #e9ecef;
             ">
             <img
-              [src]="'http://localhost:3000' + habitacionSeleccionada.imagen"
+              [src]="getImagenUrl(habitacionSeleccionada.imagen)"
               alt="Imagen actual"
               style="
                 width: 60px;

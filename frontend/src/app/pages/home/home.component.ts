@@ -46,39 +46,49 @@ export class HomeComponent implements OnInit {
   // ============================================
   aboutContentSanitizado: SafeHtml = "";
 
-  contenidoAboutDefault: string = `
-    <div class="about-simple">
-      <div class="about-header">
-        <h2>Bienvenido a nuestro paraíso</h2>
-        <p class="subtitle">Un lugar donde la naturaleza y el confort se encuentran</p>
-      </div>
-      <div class="about-grid">
-        <div class="about-text">
-          <p>Ubicado en el corazón del campo, nuestro hotel te ofrece una experiencia única de desconexión y tranquilidad.</p>
-          <p>Rodeado de paisajes impresionantes, podrás disfrutar de la paz que solo la naturaleza puede ofrecer.</p>
-          <ul class="features-list">
-            <li>🛏️ Habitaciones confortables con vistas al jardín</li>
-            <li>🍽️ Restaurante con cocina tradicional</li>
-            <li>🌿 Zonas verdes y jardines</li>
-            <li>🏊 Piscina climatizada</li>
-            <li>🚴 Rutas de senderismo y bicicleta</li>
-          </ul>
-          <div class="about-actions">
-            <a href="/habitaciones" class="btn-about">Ver habitaciones</a>
-          </div>
-        </div>
-        <div class="about-image">
-          <img src="http://localhost:3000/uploads/tinymce/about_hotel.jpg" alt="Hotel Rural">
-        </div>
-      </div>
-    </div>
-  `;
+  // ✅ Base URL para imágenes (desde environment)
+  private baseUrl = environment.apiUrl.replace("/api", "");
+
+  // ✅ IMAGEN POR DEFECTO DEL HERO
+  private readonly heroDefaultImage = `${this.baseUrl}/uploads/hero/hero.jpg`;
+
+  // ✅ CONTENIDO ABOUT DEFAULT (con URL dinámica)
+  contenidoAboutDefault: string = "";
 
   constructor(
     private contenidoService: ContenidoService,
     private router: Router,
     private sanitizer: DomSanitizer,
-  ) {}
+  ) {
+    // ✅ Inicializar contenidoAboutDefault con la URL dinámica
+    this.contenidoAboutDefault = `
+      <div class="about-simple">
+        <div class="about-header">
+          <h2>Bienvenido a nuestro paraíso</h2>
+          <p class="subtitle">Un lugar donde la naturaleza y el confort se encuentran</p>
+        </div>
+        <div class="about-grid">
+          <div class="about-text">
+            <p>Ubicado en el corazón del campo, nuestro hotel te ofrece una experiencia única de desconexión y tranquilidad.</p>
+            <p>Rodeado de paisajes impresionantes, podrás disfrutar de la paz que solo la naturaleza puede ofrecer.</p>
+            <ul class="features-list">
+              <li>🛏️ Habitaciones confortables con vistas al jardín</li>
+              <li>🍽️ Restaurante con cocina tradicional</li>
+              <li>🌿 Zonas verdes y jardines</li>
+              <li>🏊 Piscina climatizada</li>
+              <li>🚴 Rutas de senderismo y bicicleta</li>
+            </ul>
+            <div class="about-actions">
+              <a href="/habitaciones" class="btn-about">Ver habitaciones</a>
+            </div>
+          </div>
+          <div class="about-image">
+            <img src="${this.baseUrl}/uploads/tinymce/about_hotel.jpg" alt="Hotel Rural">
+          </div>
+        </div>
+      </div>
+    `;
+  }
 
   ngOnInit(): void {
     // ✅ 1. Cargar sección HERO
@@ -169,18 +179,18 @@ export class HomeComponent implements OnInit {
 
   /**
    * Obtiene la URL completa de una imagen
-   * @param ruta - Ruta de la imagen (puede ser cualquier tipo: string, number, boolean, undefined, null)
+   * @param ruta - Ruta de la imagen (puede ser cualquier tipo)
    * @returns URL completa de la imagen o imagen por defecto
    */
   getImagenUrl(ruta: any): string {
     if (!ruta) {
-      return "http://localhost:3000/uploads/hero/hero.jpg";
+      return this.heroDefaultImage;
     }
     const rutaStr = String(ruta);
     if (rutaStr.startsWith("http://") || rutaStr.startsWith("https://")) {
       return rutaStr;
     }
     // ✅ Usar la URL base del backend desde environment
-    return environment.apiUrl.replace("/api", "") + rutaStr;
+    return this.baseUrl + rutaStr;
   }
 }

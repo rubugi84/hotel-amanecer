@@ -81,6 +81,7 @@ type SeccionAdmin =
 })
 export class AdminDashboardComponent implements OnInit {
   @ViewChild("fileInputHero") fileInputHero!: ElementRef<HTMLInputElement>;
+  private baseUrl = environment.apiUrl.replace("/api", "");
 
   // ============================================
   // ADMIN - DATOS DEL USUARIO LOGUEADO
@@ -488,11 +489,9 @@ export class AdminDashboardComponent implements OnInit {
   cerrarSesion(): void {
     this.authService.logout().subscribe({
       next: () => {
-        // ✅ Éxito: Redirige al usuario a la página de login
         this.router.navigate(["/login"]);
       },
       error: (err) => {
-        // ❌ Error: Muestra un mensaje si algo falla
         console.error("Error al cerrar sesión:", err);
         alert("Hubo un problema al cerrar la sesión. Inténtalo de nuevo.");
       },
@@ -582,7 +581,7 @@ export class AdminDashboardComponent implements OnInit {
         <li>🚴 Rutas de senderismo y bicicleta</li>
       </ul>
       <p style="text-align: center;">
-        <img src="http://localhost:3000/uploads/imagenes/about_hotel.jpg" alt="Hotel Rural" style="max-width: 100%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+        <img src="${this.baseUrl}/uploads/imagenes/about_hotel.jpg" alt="Hotel Rural" style="max-width: 100%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
       </p>
     `;
   }
@@ -700,8 +699,9 @@ export class AdminDashboardComponent implements OnInit {
     this.habitacionSeleccionada = {...habitacion};
     this.caracteristicasInput = habitacion.caracteristicas?.join(", ") || "";
     this.esEdicion = true;
+    // ✅ CORREGIDO: Usar getImagenUrl en lugar de localhost
     this.previewImagenHabitacion = habitacion.imagen
-      ? `http://localhost:3000${habitacion.imagen}`
+      ? this.getImagenUrl(habitacion.imagen)
       : null;
     this.imagenHabitacion = null;
     this.modalHabitacionAbierto = true;
@@ -712,6 +712,28 @@ export class AdminDashboardComponent implements OnInit {
     this.habitacionSeleccionada = null;
     this.previewImagenHabitacion = null;
     this.imagenHabitacion = null;
+  }
+
+  // ✅ Método para obtener URL de imagen (acepta cualquier tipo)
+  getImagenUrl(ruta: any): string {
+    if (!ruta) {
+      return `${this.baseUrl}/uploads/hero/hero.jpg`;
+    }
+    const rutaStr = String(ruta);
+    if (rutaStr.startsWith("http://") || rutaStr.startsWith("https://")) {
+      return rutaStr;
+    }
+    return this.baseUrl + rutaStr;
+  }
+
+  // ✅ Método para obtener URL de documento (acepta cualquier tipo)
+  getDocumentUrl(ruta: any): string {
+    if (!ruta) return "";
+    const rutaStr = String(ruta);
+    if (rutaStr.startsWith("http://") || rutaStr.startsWith("https://")) {
+      return rutaStr;
+    }
+    return this.baseUrl + rutaStr;
   }
 
   onImagenHabitacionSeleccionada(event: Event): void {
@@ -2050,9 +2072,9 @@ export class AdminDashboardComponent implements OnInit {
     return true;
   }
   obtenerColorFuerza(): string {
-    if (this.fuerzaContrasena <= 1) return "#dc3545"; // Rojo - Débil
-    if (this.fuerzaContrasena === 2) return "#ffc107"; // Amarillo - Media
-    if (this.fuerzaContrasena >= 3) return "#28a745"; // Verde - Fuerte
+    if (this.fuerzaContrasena <= 1) return "#dc3545";
+    if (this.fuerzaContrasena === 2) return "#ffc107";
+    if (this.fuerzaContrasena >= 3) return "#28a745";
     return "#999";
   }
   // ============================================
@@ -2063,7 +2085,6 @@ export class AdminDashboardComponent implements OnInit {
     this.contenidoService.getSeccionesLista().subscribe({
       next: (secciones: string[]) => {
         this.seccionesLista = secciones;
-        // Cargar la primera sección por defecto
         if (this.seccionesLista.length > 0) {
           this.cargarSeccionConfig(this.seccionesLista[0]);
         }
@@ -2112,7 +2133,6 @@ export class AdminDashboardComponent implements OnInit {
     this.guardandoConfig = true;
     this.mensajeConfig = "";
 
-    // ✅ Asegurar que hero_imagen se mantiene si existe
     const datosAGuardar = {...this.seccionConfigData};
 
     this.contenidoService
@@ -2154,7 +2174,6 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   formatearClave(clave: string): string {
-    // Convertir snake_case a texto legible
     return clave.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
   }
 
@@ -2163,11 +2182,9 @@ export class AdminDashboardComponent implements OnInit {
     return valor.length > 50 || valor.includes("\n");
   }
   abrirSelectorImagenHero(): void {
-    // ✅ Usar ViewChild en lugar de querySelector
     if (this.fileInputHero) {
       this.fileInputHero.nativeElement.click();
     } else {
-      // Fallback: buscar por ID
       const input = document.getElementById(
         "fileInputHero",
       ) as HTMLInputElement;
@@ -2208,10 +2225,7 @@ export class AdminDashboardComponent implements OnInit {
         this.subiendoImagenHero = false;
 
         if (response.ruta) {
-          // ✅ Actualizar el valor en los datos de la sección
           this.seccionConfigData["hero_imagen"] = response.ruta;
-
-          // ✅ Guardar la sección
           this.guardarSeccionConfig();
         }
         this.imagenHeroSeleccionada = null;
@@ -2252,7 +2266,7 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
   trackByKey(index: number, item: any): string {
-    return item.key; // Usa la clave (ej: 'hero_titulo') como identificador único
+    return item.key;
   }
   cargarEstadisticas() {
     const sub = this.adminService.getEstadisticas().subscribe({
@@ -2285,7 +2299,6 @@ export class AdminDashboardComponent implements OnInit {
     this.subscriptions.push(sub);
   }
 
-  // Método para formatear fecha
   formatearFecha(fecha: string): string {
     if (!fecha) return "";
     const date = new Date(fecha);
@@ -2296,7 +2309,6 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  // Método para obtener el estado en español
   getEstadoTexto(estado: string): string {
     const estados: Record<string, string> = {
       pendiente: "Pendiente",
@@ -2307,7 +2319,6 @@ export class AdminDashboardComponent implements OnInit {
     return estados[estado] || estado;
   }
 
-  // Método para obtener la clase del estado
   getEstadoClase(estado: string): string {
     const clases: Record<string, string> = {
       pendiente: "estado-pendiente",

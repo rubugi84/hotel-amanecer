@@ -146,7 +146,7 @@
       <div style="display: flex; gap: 10px; flex-wrap: wrap">
         <a
           *ngIf="reserva.dni_frontal_url"
-          [href]="'http://localhost:3000' + reserva.dni_frontal_url"
+          [href]="getDocumentUrl(reserva.dni_frontal_url)"
           target="_blank"
           class="btn-edit"
           style="
@@ -160,7 +160,7 @@
         </a>
         <a
           *ngIf="reserva.dni_trasero_url"
-          [href]="'http://localhost:3000' + reserva.dni_trasero_url"
+          [href]="getDocumentUrl(reserva.dni_trasero_url)"
           target="_blank"
           class="btn-edit"
           style="

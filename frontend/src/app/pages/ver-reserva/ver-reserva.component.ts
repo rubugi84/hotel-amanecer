@@ -151,4 +151,13 @@ export class VerReservaComponent implements OnInit {
   imprimir(): void {
     window.print();
   }
+  private baseUrl = environment.apiUrl.replace("/api", "");
+
+  getDocumentUrl(ruta: string): string {
+    if (!ruta) return "";
+    if (ruta.startsWith("http://") || ruta.startsWith("https://")) {
+      return ruta;
+    }
+    return this.baseUrl + ruta;
+  }
 }

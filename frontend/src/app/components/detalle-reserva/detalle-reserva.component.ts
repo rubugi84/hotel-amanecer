@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import {ContenidoService} from "../../services/contenido.service";
 // 🔥 Importar la interfaz Habitacion
 import {Habitacion, TildeMap} from "../../models/contenido.models";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: "app-detalle-reserva",
@@ -122,6 +123,7 @@ export class DetalleReservaComponent implements OnInit {
   confirmarReserva(): void {}
 
   getImagenUrl(ruta: string): string {
-    return ruta ? "http://localhost:3000" + ruta : "";
+    const baseUrl = environment.apiUrl.replace("/api", "");
+    return ruta ? baseUrl + ruta : "";
   }
 }

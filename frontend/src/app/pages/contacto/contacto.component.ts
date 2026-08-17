@@ -3,6 +3,7 @@ import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 import {ContenidoService} from "../../services/contenido.service";
+import {UrlService} from "../../services/url.service";
 import {
   DatosContacto,
   FooterData,
@@ -49,13 +50,10 @@ export class ContactoComponent implements OnInit, OnDestroy {
   cargando: boolean = true;
   private subscriptions: Subscription[] = [];
 
-  // Coordenadas exactas del hotel (reemplazar con las correctas)
-  private readonly LATITUD = "42.2686659";
-  private readonly LONGITUD = "-4.4454503";
-
   constructor(
     private http: HttpClient,
     private contenidoService: ContenidoService,
+    private urlService: UrlService, // ✅ Inyectar UrlService
   ) {}
 
   ngOnInit() {
@@ -66,7 +64,6 @@ export class ContactoComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  // ✅ Cargar datos del footer desde la BD
   cargarDatosFooter() {
     this.cargando = true;
 
@@ -74,6 +71,8 @@ export class ContactoComponent implements OnInit, OnDestroy {
       .getContenidoBySeccion("footer")
       .subscribe({
         next: (data: ContenidoSeccion) => {
+          console.log("📦 Datos del footer desde BD:", data);
+
           const direccionCompleta = String(
             data["footer_direccion"] ||
               "C/ Fuente Nueva, s/n Población de Campos 34449 - Palencia",
@@ -106,6 +105,7 @@ export class ContactoComponent implements OnInit, OnDestroy {
           };
 
           this.cargando = false;
+          console.log("✅ Datos del footer cargados:", this.datosHotel);
         },
         error: (error) => {
           console.error("❌ Error al cargar datos del footer:", error);
@@ -121,32 +121,16 @@ export class ContactoComponent implements OnInit, OnDestroy {
     return this.datosHotel.telefono.replace(/\s/g, "");
   }
 
-  // ✅ Método para obtener la URL de Google Maps con coordenadas exactas
+  // ✅ Método para obtener URL de Google Maps
   getGoogleMapsUrl(): string {
-    const nombre = this.datosHotel.nombre.replace(/\s+/g, "+");
-    const lat = this.LATITUD;
-    const lng = this.LONGITUD;
-
-    // Formato con Place ID y coordenadas para máxima precisión
-    return `https://www.google.com/maps/place/${nombre}/@${lat},${lng},17z/data=!3m1!4b1!4m5!3m4!1s0xd47cdacc9e9a091:0x4cf6a70a10a4931e!8m2!3d${lat}!4d${lng}`;
+    const nombre = this.datosHotel.nombre.replace(/ /g, "+");
+    const direccion = this.datosHotel.direccion;
+    return `https://www.google.com/maps/dir//${nombre},_${direccion}`;
   }
 
-  // ✅ Método alternativo para obtener la URL de Google Maps (para llegar desde tu ubicación)
-  getGoogleMapsDirUrl(): string {
-    const lat = this.LATITUD;
-    const lng = this.LONGITUD;
-    return `https://www.google.com/maps/dir//${lat},${lng}`;
-  }
-
-  // ✅ Método para obtener la URL del QR
+  // ✅ Método para obtener URL del QR
   getQrUrl(): string {
     const url = this.getGoogleMapsUrl();
-    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
-  }
-
-  // ✅ Método para obtener la URL del QR con "Cómo llegar"
-  getQrDirUrl(): string {
-    const url = this.getGoogleMapsDirUrl();
     return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
   }
 
@@ -158,25 +142,25 @@ export class ContactoComponent implements OnInit, OnDestroy {
     this.estadoEnvio = "enviando";
     this.mensajeEstado = "Enviando mensaje...";
 
-    const sub = this.http
-      .post("http://localhost:3000/api/contacto/enviar", this.contacto)
-      .subscribe({
-        next: (response: any) => {
-          this.estadoEnvio = "exito";
-          this.mensajeEstado =
-            response.mensaje || "¡Mensaje enviado con éxito!";
-          this.resetearFormulario();
-          this.ocultarMensajeDespuesDe(5000);
-        },
-        error: (error) => {
-          this.estadoEnvio = "error";
-          this.mensajeEstado =
-            error.error?.mensaje ||
-            "Error al enviar el mensaje. Por favor, inténtalo de nuevo.";
-          console.error("Error al enviar mensaje:", error);
-          this.ocultarMensajeDespuesDe(5000);
-        },
-      });
+    // ✅ Usar UrlService para la URL de la API
+    const apiUrl = this.urlService.getApiUrl("/contacto/enviar");
+
+    const sub = this.http.post(apiUrl, this.contacto).subscribe({
+      next: (response: any) => {
+        this.estadoEnvio = "exito";
+        this.mensajeEstado = response.mensaje || "¡Mensaje enviado con éxito!";
+        this.resetearFormulario();
+        this.ocultarMensajeDespuesDe(5000);
+      },
+      error: (error) => {
+        this.estadoEnvio = "error";
+        this.mensajeEstado =
+          error.error?.mensaje ||
+          "Error al enviar el mensaje. Por favor, inténtalo de nuevo.";
+        console.error("Error al enviar mensaje:", error);
+        this.ocultarMensajeDespuesDe(5000);
+      },
+    });
 
     this.subscriptions.push(sub);
   }

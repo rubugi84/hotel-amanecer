@@ -6,6 +6,7 @@ import {DatepickerModule} from "../../datepicker.module";
 import dayjs from "dayjs";
 import {ContenidoService} from "../../services/contenido.service";
 import {Router} from "@angular/router";
+import {environment} from "../../../environments/environment";
 import {
   Habitacion,
   BusquedaDisponibilidad,
@@ -184,6 +185,7 @@ export class HabitacionesComponent implements OnInit {
   }
 
   getImagenUrl(ruta: string): string {
-    return ruta ? "http://localhost:3000" + ruta : "";
+    const baseUrl = environment.apiUrl.replace("/api", "");
+    return ruta ? baseUrl + ruta : "";
   }
 }
