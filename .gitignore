@@ -31,4 +31,4 @@ yarn-error.log*
 coverage/
 
 # Angular específico
-.angular/
+.angular/dist/

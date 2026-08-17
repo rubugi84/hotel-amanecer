@@ -1,3 +1,4 @@
+@"
 node_modules
 npm-debug.log
 .env
@@ -5,16 +6,12 @@ npm-debug.log
 .gitignore
 *.md
 .DS_Store
-dist
-tmp
-out-tsc
-*.ts.map
-*.js.map
 .angular
 .vscode
 .idea
+*.ts.map
+*.js.map
 coverage
-.nyc_output
 *.log
 *.tgz
-package-lock.json
+"@ | Out-File -FilePath .dockerignore -Encoding utf8
