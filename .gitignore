@@ -32,3 +32,5 @@ coverage/
 
 # Angular específico
 .angular/dist/
+frontend/dist/
+backend/node_modules/
