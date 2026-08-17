@@ -1,0 +1,18 @@
+FROM node:18-alpine as build
+
+WORKDIR /app
+
+# ✅ Solo copiar lo necesario para instalar dependencias
+COPY package.json package-lock.json ./
+RUN npm ci --only=production
+
+# ✅ Copiar el resto
+COPY . .
+
+# ✅ Usar --prod para minimizar
+RUN npm run build -- --configuration=production --prod
+
+FROM nginx:alpine
+COPY --from=build /app/dist/hotel-amanecer /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
