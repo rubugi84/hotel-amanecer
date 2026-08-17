@@ -76,7 +76,6 @@ export class ResumenReservaComponent implements OnInit {
 
         if (this.datos) {
           this.calcularNoches();
-          console.log("✅ Datos de reserva cargados:", this.datos);
         }
       } catch (error) {
         console.error("❌ Error al cargar datos de reserva:", error);
@@ -98,7 +97,6 @@ export class ResumenReservaComponent implements OnInit {
         next: (item) => {
           const precio = parseFloat(item.valor);
           this.precioDesayuno = isNaN(precio) ? 10 : precio;
-          console.log("✅ Precio desayuno cargado:", this.precioDesayuno);
         },
         error: (error) => {
           console.error("❌ Error al cargar precio del desayuno:", error);
@@ -151,7 +149,6 @@ export class ResumenReservaComponent implements OnInit {
       }
 
       this.totalNoches = diffDays;
-      console.log("📊 Noches calculadas:", this.totalNoches);
     } catch (error) {
       console.error("❌ Error al calcular noches:", error);
       this.totalNoches = 1;
@@ -287,8 +284,6 @@ export class ResumenReservaComponent implements OnInit {
       solicitud_especial: String(this.solicitudEspecial || ""),
       hora_llegada: String(this.horaEstimadaLlegada || ""),
     };
-
-    console.log("📤 Enviando reserva:", datosParaBackend);
 
     this.contenidoService.crearReserva(datosParaBackend).subscribe({
       next: (response: ReservaResponse) => {

@@ -315,5 +315,29 @@ router.post("/:id/reenviar-email", async (req, res) => {
       .json({error: "Error al reenviar el email", details: error.message});
   }
 });
+// ✅ Buscar reserva por código de reserva
+router.get("/codigo/:codigo", async (req, res) => {
+  try {
+    const {codigo} = req.params;
 
+    const result = await pool.query(
+      `SELECT r.*, h.nombre as habitacion_nombre, h.descripcion as habitacion_descripcion, 
+              h.caracteristicas as habitacion_caracteristicas, h.imagen as habitacion_imagen, 
+              h.precio as habitacion_precio
+       FROM reservas r
+       LEFT JOIN habitaciones h ON r.habitacion_id = h.id
+       WHERE r.codigo_reserva = $1`,
+      [codigo],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({error: "Reserva no encontrada"});
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("❌ Error al buscar reserva por código:", error);
+    res.status(500).json({error: "Error al buscar reserva"});
+  }
+});
 module.exports = router;

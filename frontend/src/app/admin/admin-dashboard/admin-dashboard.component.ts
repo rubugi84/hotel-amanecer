@@ -2259,7 +2259,6 @@ export class AdminDashboardComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.estadisticas = response.data;
-          console.log("✅ Estadísticas cargadas:", this.estadisticas);
         }
         this.cargando = false;
       },
@@ -2277,10 +2276,6 @@ export class AdminDashboardComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.reservasRecientes = response.data;
-          console.log(
-            "✅ Reservas recientes cargadas:",
-            this.reservasRecientes,
-          );
         }
       },
       error: (error) => {

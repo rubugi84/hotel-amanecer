@@ -23,10 +23,6 @@ router.get("/estadisticas", async (req, res) => {
     const lunesStr = lunes.toISOString().split("T")[0];
     const domingoStr = domingo.toISOString().split("T")[0];
 
-    console.log(
-      `📊 Estadísticas - Hoy: ${hoyStr}, Lunes: ${lunesStr}, Domingo: ${domingoStr}`,
-    );
-
     // 1. Reservas de hoy (fecha_entrada = hoy)
     const reservasHoyResult = await pool.query(
       `SELECT COUNT(*) as total FROM reservas 

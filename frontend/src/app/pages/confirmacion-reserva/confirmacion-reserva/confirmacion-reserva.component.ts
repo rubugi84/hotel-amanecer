@@ -12,10 +12,10 @@ import {interval, Subscription} from "rxjs";
 })
 export class ConfirmacionReservaComponent implements OnInit, OnDestroy {
   codigoReserva: string = "";
+  hashSeguro: string = ""; // ✅ Añadir hash
   nombreCliente: string = "";
   importeTotal: number = 0;
 
-  // ✅ Barra de progreso
   progreso: number = 0;
   segundosRestantes: number = 5;
   private intervaloSubscription: Subscription | null = null;
@@ -23,21 +23,19 @@ export class ConfirmacionReservaComponent implements OnInit, OnDestroy {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    // Cargar datos de la última reserva
     const ultimaReserva = localStorage.getItem("ultimaReserva");
     if (ultimaReserva) {
       try {
         const reserva = JSON.parse(ultimaReserva);
         this.codigoReserva = reserva.codigo_reserva || "N/A";
+        this.hashSeguro = reserva.hash_seguro || ""; // ✅ Guardar hash
         this.nombreCliente = reserva.nombre_cliente || "";
         this.importeTotal = reserva.importe_total || 0;
-        console.log("✅ Datos de confirmación cargados:", reserva);
       } catch (error) {
         console.error("❌ Error al cargar datos de confirmación:", error);
       }
     }
 
-    // Iniciar barra de progreso
     this.iniciarBarraProgreso();
   }
 
@@ -63,7 +61,6 @@ export class ConfirmacionReservaComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ✅ Método para redirigir manualmente al inicio
   irAlInicio(): void {
     if (this.intervaloSubscription) {
       this.intervaloSubscription.unsubscribe();
@@ -71,11 +68,17 @@ export class ConfirmacionReservaComponent implements OnInit, OnDestroy {
     this.router.navigate(["/"]);
   }
 
-  // ✅ Método para ver el detalle de la reserva
   verDetalleReserva(): void {
     if (this.intervaloSubscription) {
       this.intervaloSubscription.unsubscribe();
     }
-    this.router.navigate(["/reservas/ver", this.codigoReserva]);
+
+    // ✅ Usar el hash en lugar del código
+    if (this.hashSeguro) {
+      this.router.navigate(["/reservas/ver", this.hashSeguro]);
+    } else {
+      // Fallback: intentar con el código (por si acaso)
+      this.router.navigate(["/reservas/ver", this.codigoReserva]);
+    }
   }
 }

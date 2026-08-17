@@ -50,8 +50,6 @@ export class VerReservaComponent implements OnInit {
   error: boolean = false;
   hashSeguro: string = "";
   reservaId: string = "";
-
-  // ✅ Controlar si viene de admin o de cliente
   esAdmin: boolean = false;
 
   constructor(
@@ -61,19 +59,31 @@ export class VerReservaComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // ✅ Detectar si viene por hash o por id
-    this.hashSeguro = this.route.snapshot.params["hash"] || "";
-    this.reservaId = this.route.snapshot.params["id"] || "";
+    // ✅ Obtener el parámetro de la ruta (puede ser hash o código)
+    const param =
+      this.route.snapshot.params["hash"] ||
+      this.route.snapshot.params["id"] ||
+      "";
 
-    // ✅ Si tiene "admin" en la URL, es modo admin
+    // ✅ Detectar si es admin
     this.esAdmin = this.route.snapshot.url.some(
       (segment) => segment.path === "admin",
     );
 
-    if (!this.hashSeguro && !this.reservaId) {
+    if (!param) {
       this.error = true;
       this.cargando = false;
       return;
+    }
+
+    // ✅ Determinar si es hash o código
+    // El hash tiene 32 caracteres hexadecimales, el código comienza con "AMS-"
+    if (param.length === 32 || param.length === 33) {
+      // Es un hash (MD5 tiene 32 caracteres)
+      this.hashSeguro = param;
+    } else {
+      // Podría ser un código de reserva (AMS-XXXXXXXX)
+      this.reservaId = param;
     }
 
     this.cargarReserva();
@@ -90,6 +100,9 @@ export class VerReservaComponent implements OnInit {
     } else if (this.hashSeguro) {
       // ✅ Si tenemos hash, usar el endpoint público
       url = `${environment.apiUrl}/reservas/ver/${this.hashSeguro}`;
+    } else if (this.reservaId) {
+      // ✅ Si tenemos un código de reserva, intentar buscar por código
+      url = `${environment.apiUrl}/reservas/codigo/${this.reservaId}`;
     } else {
       this.error = true;
       this.cargando = false;
@@ -98,7 +111,6 @@ export class VerReservaComponent implements OnInit {
 
     this.http.get<ReservaData>(url).subscribe({
       next: (response: ReservaData) => {
-        // ✅ Formatear los datos para que sean consistentes
         this.reserva = {
           ...response,
           created_at:
@@ -129,7 +141,6 @@ export class VerReservaComponent implements OnInit {
   }
 
   volver(): void {
-    // ✅ Si viene de admin, volver al dashboard
     if (this.esAdmin) {
       this.router.navigate(["/admin"]);
     } else {

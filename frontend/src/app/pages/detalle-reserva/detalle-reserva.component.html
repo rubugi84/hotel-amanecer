@@ -132,13 +132,13 @@
           </div>
         </div>
 
-        <!-- ✅ DESAYUNO CON PRECIO DINÁMICO DESDE BD -->
+        <!-- ✅ DESAYUNO CON PRECIO DINÁMICO DESDE BD - USANDO ngValue -->
         <div class="form-group">
           <label>Desayuno</label>
           <div class="select-wrapper">
             <select [(ngModel)]="desayuno" (change)="detectarCambios()">
-              <option [value]="false">No incluir</option>
-              <option [value]="true">
+              <option [ngValue]="false">No incluir</option>
+              <option [ngValue]="true">
                 {{ getTextoDesayuno() }}
               </option>
             </select>
@@ -220,27 +220,30 @@
           </small>
         </div>
 
-        <!-- ✅ IMPORTE TOTAL ACTUALIZADO -->
+        <!-- ✅ IMPORTE TOTAL -->
         <div class="total-price">
           <span>Total:</span>
           <span>{{ calcularImporte() | currency: "EUR" }}</span>
         </div>
 
-        <!-- Detalle del precio (opcional) -->
+        <!-- Detalle del precio -->
         <div class="price-detail" *ngIf="calcularNoches() > 0">
           <div class="price-item">
             <span
               >{{ habitacion.precio }}€ x {{ calcularNoches() }} noches</span
             >
-            <span>{{ calcularPrecioBase() }}€</span>
+            <span>{{ calcularPrecioBase() | currency: "EUR" }}</span>
           </div>
-          <div class="price-item" *ngIf="desayuno">
-            <span
-              >Desayuno: {{ precioDesayuno }}€ x {{ adultos + ninos }} personas
-              x {{ calcularNoches() }} noches</span
-            >
-            <span>{{ calcularPrecioDesayuno() }}€</span>
+
+          <!-- ✅ CORREGIDO: Se muestra/oculta según desayuno -->
+          <div class="price-item" *ngIf="desayuno === true">
+            <span>
+              Desayuno: {{ precioDesayuno }}€ x {{ adultos + ninos }} personas x
+              {{ calcularNoches() }} noches
+            </span>
+            <span>{{ calcularPrecioDesayuno() | currency: "EUR" }}</span>
           </div>
+
           <div class="price-total">
             <span><strong>Total</strong></span>
             <span
@@ -248,31 +251,31 @@
             >
           </div>
         </div>
+      </div>
 
-        <div
-          *ngIf="mostrarError"
-          class="mensaje-error"
-          [class.mensaje-exito]="!esError">
-          <i
-            [class]="
-              esError ? 'bi bi-exclamation-circle' : 'bi bi-check-circle'
-            "></i>
-          {{ mensajeError }}
-        </div>
+      <div
+        *ngIf="mostrarError"
+        class="mensaje-error"
+        [class.mensaje-exito]="!esError">
+        <i
+          [class]="
+            esError ? 'bi bi-exclamation-circle' : 'bi bi-check-circle'
+          "></i>
+        {{ mensajeError }}
+      </div>
 
-        <!-- Botón dinámico -->
-        <button
-          class="btn-action"
-          (click)="accionBoton()"
-          [disabled]="!habitacion.activo">
-          {{ datosModificados ? "Consultar" : "Reservar" }}
-        </button>
+      <!-- Botón dinámico -->
+      <button
+        class="btn-action"
+        (click)="accionBoton()"
+        [disabled]="!habitacion.activo">
+        {{ datosModificados ? "Consultar" : "Reservar" }}
+      </button>
 
-        <!-- Mensaje de no disponibilidad -->
-        <div *ngIf="!habitacion.activo" class="unavailable-message">
-          <i class="bi bi-exclamation-triangle"></i>
-          Esta habitación no está disponible actualmente
-        </div>
+      <!-- Mensaje de no disponibilidad -->
+      <div *ngIf="!habitacion.activo" class="unavailable-message">
+        <i class="bi bi-exclamation-triangle"></i>
+        Esta habitación no está disponible actualmente
       </div>
     </div>
   </div>
