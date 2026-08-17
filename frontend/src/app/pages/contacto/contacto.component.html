@@ -8,7 +8,7 @@
     <!-- MAPA - Bloque superior horizontal -->
     <div class="mapa-bloque">
       <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3049.768116951698!2d-4.4478069!3d42.2689351!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd47cdacc9e9a091%3A0x4cf6a70a10a4931e!2sHotel%20Amanecer%20en%20Campos!5e0!3m2!1ses!2ses!4v1234567890"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3049.768116951698!2d-3.123456!3d39.123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDA3JzI0LjQiTiAzwrAwNycyNC40Ilc!5e0!3m2!1ses!2ses!4v1234567890"
         width="100%"
         height="350"
         style="border: 0"
@@ -40,11 +40,8 @@
             <div>
               <strong>Dirección:</strong>
               <p>{{ datosHotel.direccionCompleta }}</p>
-              <!-- ✅ Enlace "Cómo llegar" con coordenadas exactas -->
-              <a
-                [href]="getGoogleMapsDirUrl()"
-                target="_blank"
-                class="map-link">
+              <!-- ✅ Enlace "Cómo llegar" -->
+              <a [href]="getGoogleMapsUrl()" target="_blank" class="map-link">
                 <i class="bi bi-map"></i> Cómo llegar
               </a>
             </div>
@@ -74,21 +71,21 @@
             </div>
           </div>
 
-          <!-- ✅ Código QR para Google Maps -->
+          <!-- ✅ NUEVO: Código QR para Google Maps -->
           <div class="qr-section">
             <p class="qr-title">
               <i class="bi bi-qr-code"></i> Escanea para llegar
             </p>
             <div class="qr-container">
               <img
-                [src]="getQrDirUrl()"
+                [src]="getQrUrl()"
                 alt="QR Code para llegar al hotel"
                 class="qr-code"
                 loading="lazy" />
             </div>
             <p class="qr-text">
               <a
-                [href]="getGoogleMapsDirUrl()"
+                [href]="getGoogleMapsUrl()"
                 target="_blank"
                 class="map-link qr-map-link">
                 Abrir en Google Maps

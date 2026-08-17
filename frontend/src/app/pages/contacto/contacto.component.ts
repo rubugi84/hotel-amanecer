@@ -3,7 +3,6 @@ import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 import {ContenidoService} from "../../services/contenido.service";
-import {UrlService} from "../../services/url.service";
 import {
   DatosContacto,
   FooterData,
@@ -53,7 +52,6 @@ export class ContactoComponent implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient,
     private contenidoService: ContenidoService,
-    private urlService: UrlService, // ✅ Inyectar UrlService
   ) {}
 
   ngOnInit() {
@@ -121,14 +119,14 @@ export class ContactoComponent implements OnInit, OnDestroy {
     return this.datosHotel.telefono.replace(/\s/g, "");
   }
 
-  // ✅ Método para obtener URL de Google Maps
+  // ✅ Método para obtener la URL de Google Maps (con coordenadas exactas)
   getGoogleMapsUrl(): string {
     const nombre = this.datosHotel.nombre.replace(/ /g, "+");
     const direccion = this.datosHotel.direccion;
     return `https://www.google.com/maps/dir//${nombre},_${direccion}`;
   }
 
-  // ✅ Método para obtener URL del QR
+  // ✅ Método para obtener la URL del QR
   getQrUrl(): string {
     const url = this.getGoogleMapsUrl();
     return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
@@ -142,25 +140,28 @@ export class ContactoComponent implements OnInit, OnDestroy {
     this.estadoEnvio = "enviando";
     this.mensajeEstado = "Enviando mensaje...";
 
-    // ✅ Usar UrlService para la URL de la API
-    const apiUrl = this.urlService.getApiUrl("/contacto/enviar");
-
-    const sub = this.http.post(apiUrl, this.contacto).subscribe({
-      next: (response: any) => {
-        this.estadoEnvio = "exito";
-        this.mensajeEstado = response.mensaje || "¡Mensaje enviado con éxito!";
-        this.resetearFormulario();
-        this.ocultarMensajeDespuesDe(5000);
-      },
-      error: (error) => {
-        this.estadoEnvio = "error";
-        this.mensajeEstado =
-          error.error?.mensaje ||
-          "Error al enviar el mensaje. Por favor, inténtalo de nuevo.";
-        console.error("Error al enviar mensaje:", error);
-        this.ocultarMensajeDespuesDe(5000);
-      },
-    });
+    const sub = this.http
+      .post(
+        "https://hotel-amanecer-backend.onrender.com/api/contacto/enviar",
+        this.contacto,
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.estadoEnvio = "exito";
+          this.mensajeEstado =
+            response.mensaje || "¡Mensaje enviado con éxito!";
+          this.resetearFormulario();
+          this.ocultarMensajeDespuesDe(5000);
+        },
+        error: (error) => {
+          this.estadoEnvio = "error";
+          this.mensajeEstado =
+            error.error?.mensaje ||
+            "Error al enviar el mensaje. Por favor, inténtalo de nuevo.";
+          console.error("Error al enviar mensaje:", error);
+          this.ocultarMensajeDespuesDe(5000);
+        },
+      });
 
     this.subscriptions.push(sub);
   }
